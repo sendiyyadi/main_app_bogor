@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="harian_hapus_denda_rinci" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="20" uuid="0da6fd9c-98f6-4e0c-94d2-7bb91af684bd">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="38"/>
+	<parameter name="kd_kecamatan" class="java.lang.String">
+		<defaultValueExpression><![CDATA["030"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tglawal" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2012-01-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tglakhir" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2014-01-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="filter" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" 1 = 1"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+z1.thn_pajak_sppt, z1.tgl_pembayaran_sppt, z1.tgl_jatuh_tempo_sppt, z1.tgl_cetak_sppt,
+z1.nopd, z1.nm_wp_sppt, z1.nm_kecamatan, z1.nm_kelurahan,
+z1.pembayaran_sppt_ke,
+--z1.pbb_terhutang_sppt,
+z1.pbb_yg_harus_dibayar_sppt,
+z1.nil_denda_normal,
+z1.denda_yg_dibayar,
+z1.nil_denda_normal - z1.denda_yg_dibayar as nil_denda_yg_dihapus,
+z1.jml_sppt_yg_dibayar
+--
+from (
+select
+byr.thn_pajak_sppt, byr.tgl_pembayaran_sppt, spp.tgl_jatuh_tempo_sppt, spp.tgl_cetak_sppt,
+byr.kd_propinsi||'.'||byr.kd_dati2 as dati2,
+byr.kd_kecamatan||'.'||byr.kd_kelurahan||'.'||byr.kd_blok||'.'||byr.no_urut||'.'||byr.kd_jns_op as nopd,
+SUBSTR(spp.nm_wp_sppt, 1, 22) AS nm_wp_sppt, kec.nm_kecamatan, kel.nm_kelurahan, 
+--
+byr.pembayaran_sppt_ke,
+spp.pbb_terhutang_sppt,
+spp.faktor_pengurang_sppt,
+spp.pbb_yg_harus_dibayar_sppt,
+CASE WHEN spp.tgl_jatuh_tempo_sppt < TO_DATE('2024-01-01', 'YYYY-MM-DD') THEN NVL(hit_denda2(spp.pbb_yg_harus_dibayar_sppt, 2, spp.tgl_jatuh_tempo_sppt), 0) ELSE NVL(hit_denda2(spp.pbb_yg_harus_dibayar_sppt, 1, spp.tgl_jatuh_tempo_sppt), 0) END as nil_denda_normal,
+byr.denda_sppt as denda_yg_dibayar,
+byr.jml_sppt_yg_dibayar
+--
+from pembayaran_sppt byr
+join sppt spp on byr.kd_propinsi = spp.kd_propinsi
+and byr.kd_dati2 = spp.kd_dati2
+and byr.kd_kecamatan = spp.kd_kecamatan
+and byr.kd_kelurahan = spp.kd_kelurahan
+and byr.kd_blok = spp.kd_blok
+and byr.no_urut = spp.no_urut
+and byr.kd_jns_op = spp.kd_jns_op
+and byr.thn_pajak_sppt = spp.thn_pajak_sppt
+LEFT JOIN ref_kecamatan kec ON kec.kd_propinsi=spp.kd_propinsi AND kec.kd_dati2=spp.kd_dati2 AND kec.kd_kecamatan=spp.kd_kecamatan
+left JOIN ref_kelurahan kel ON kel.kd_propinsi=spp.kd_propinsi AND kel.kd_dati2=spp.kd_dati2 AND kel.kd_kecamatan=spp.kd_kecamatan
+AND kel.kd_kelurahan=spp.kd_kelurahan
+where
+byr.jml_sppt_yg_dibayar > 0 and
+-- byr.jml_sppt_yg_dibayar = spp.pbb_yg_harus_dibayar_sppt and
+(
+   ( byr.thn_pajak_sppt < '2024' and byr.tgl_pembayaran_sppt BETWEEN TO_DATE('2021-01-01', 'YYYY-MM-DD') AND TO_DATE('2024-08-31', 'YYYY-MM-DD') ) OR
+   byr.tgl_pembayaran_sppt BETWEEN TO_DATE('2021-01-01', 'YYYY-MM-DD') AND TO_DATE('2024-08-31', 'YYYY-MM-DD')
+)
+ $P!{filter}
+) z1 where z1.nil_denda_normal > 0 and (z1.nil_denda_normal - z1.denda_yg_dibayar) > 0]]>
+	</queryString>
+	<field name="thn_pajak_sppt" class="java.lang.String"/>
+	<field name="tgl_pembayaran_sppt" class="java.sql.Timestamp"/>
+	<field name="tgl_jatuh_tempo_sppt" class="java.sql.Date"/>
+	<field name="tgl_cetak_sppt" class="java.sql.Date"/>
+	<field name="nopd" class="java.lang.String"/>
+	<field name="nm_wp_sppt" class="java.lang.String"/>
+	<field name="nm_kecamatan" class="java.lang.String"/>
+	<field name="nm_kelurahan" class="java.lang.String"/>
+	<field name="pembayaran_sppt_ke" class="java.math.BigDecimal"/>
+	<field name="pbb_yg_harus_dibayar_sppt" class="java.math.BigDecimal"/>
+	<field name="nil_denda_normal" class="java.lang.Long"/>
+	<field name="denda_yg_dibayar" class="java.math.BigDecimal"/>
+	<field name="nil_denda_yg_dihapus" class="java.math.BigDecimal"/>
+	<field name="jml_sppt_yg_dibayar" class="java.math.BigDecimal"/>
+	<sortField name="nm_kecamatan"/>
+	<sortField name="tgl_pembayaran_sppt" order="Descending"/>
+	<sortField name="thn_pajak_sppt" order="Descending"/>
+	<variable name="sumpokok" class="java.lang.Double" resetType="Group" resetGroup="grup_kec" calculation="Sum">
+		<variableExpression><![CDATA[$F{pbb_yg_harus_dibayar_sppt}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumdenda" class="java.lang.Double" resetType="Group" resetGroup="grup_kec" calculation="Sum">
+		<variableExpression><![CDATA[$F{nil_denda_normal}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumbayar" class="java.lang.Double" resetType="Group" resetGroup="grup_kec" calculation="Sum">
+		<variableExpression><![CDATA[$F{jml_sppt_yg_dibayar}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sisa_yg_blm_dibyr" class="java.lang.Double">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="sumdenda_dihapus" class="java.lang.Double" resetType="Group" resetGroup="grup_kec" calculation="Sum">
+		<variableExpression><![CDATA[$F{nil_denda_yg_dihapus}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumpokok_tot" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{pbb_yg_harus_dibayar_sppt}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumdenda_tot" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{nil_denda_normal}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumbayar_tot" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{jml_sppt_yg_dibayar}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sisa_yg_blm_dibyr_tot" class="java.lang.Double">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="sumdenda_dihapus_tot" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{nil_denda_yg_dihapus}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sum_nopd" class="java.lang.Double" resetType="Group" resetGroup="grup_kec" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sum_nopd_tot" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<group name="grup_kec">
+		<groupExpression><![CDATA[$F{nm_kecamatan}]]></groupExpression>
+		<groupHeader>
+			<band height="17">
+				<textField>
+					<reportElement x="0" y="0" width="789" height="16" uuid="93dcc5c4-b032-42e4-9194-147d1bae0186"/>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement verticalAlignment="Middle" markup="none">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" Kecamatan : "+$F{nm_kecamatan}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement x="443" y="0" width="90" height="20" uuid="15f920ac-c5bc-4bad-a9fc-dd9e6fcc7253"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumpokok})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="247" height="20" uuid="af889744-6025-4670-98fd-a4fe25b73285"/>
+					<box rightPadding="4">
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Jml Per Kec : "+$F{nm_kecamatan}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="533" y="0" width="83" height="20" uuid="5f2ed349-144e-4bbe-b91f-aaa53b8dffcf"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumdenda})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="699" y="0" width="90" height="20" uuid="3c106dde-b96a-4330-88c7-ba39e33a0f84"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumbayar})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="616" y="0" width="83" height="20" uuid="650b9a21-9e77-4590-abfd-d21a77adf21b"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumdenda_dihapus})]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="247" y="0" width="196" height="20" uuid="381b0278-30b2-460a-ac0b-736f716b1ecf"/>
+					<box rightPadding="2">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sum_nopd})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80">
+			<textField>
+				<reportElement x="0" y="5" width="789" height="16" uuid="84bd8a8e-f3c3-48fe-8180-d7172d4eeb2e"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["LAMPIRAN KEPUTUSAN KEPALA BADAN PENGELOLAAN PENDAPATAN DAERAH"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="30" width="789" height="16" uuid="3813e831-f7cf-4e70-86bc-5891113f63d7"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NOMOR      :"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="46" width="789" height="16" uuid="57ff6005-cac5-46cd-abb5-7cf86e2fbed3"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TANGGAL  :"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="789" height="16" uuid="bad0711e-0d0f-4ad5-b3a5-a55b7434408c"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DATA PENGHAPUSAN SANKSI ADMINISTRATIF PBB-P2 "]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="62">
+			<staticText>
+				<reportElement x="0" y="0" width="71" height="62" uuid="980e4144-7937-4a6c-9bc6-b9862e602a8b"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TAHUN SPPT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="0" width="66" height="62" uuid="8438c577-a225-40eb-a62c-dfef444a7f62"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TANGGAL
+BAYAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="0" width="90" height="62" uuid="23f36b33-48dc-40eb-9a97-7b3ab9eb286b"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[POKOK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="533" y="0" width="83" height="62" uuid="08d13cc9-4486-4ec6-8353-1cbe024b12b4"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SANKSI
+ADMINISTRATIF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="699" y="0" width="90" height="62" uuid="8c5d75b2-f6de-436b-bfc0-b0fbbdb1662a"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JUMLAH YANG
+DIBAYAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="0" width="196" height="62" uuid="dde09a74-264e-4f25-9a0d-90c56a45d1d1"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAMA WAJIB
+PAJAK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="137" y="0" width="110" height="62" uuid="5f6b4536-08f6-46d7-84f8-aa59478e62a0"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="616" y="0" width="83" height="62" uuid="62b1b969-7025-4c70-91ee-e6642e900a87"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.5" lineStyle="Solid"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.75" lineStyle="Solid"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SANKSI
+ADMINISTRATIF
+YANG
+DIHAPUSKAN]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="71" height="17" uuid="f80896e0-17f2-4c29-9d9f-f5d2a593b6a2"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{thn_pajak_sppt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MM-yyyy" isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToTallestObject" x="71" y="0" width="66" height="17" uuid="e23d836a-b176-40ad-a0f5-d6ec7667aaa0"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tgl_pembayaran_sppt}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="443" y="0" width="90" height="17" uuid="716659e9-cb07-40ce-9bae-180f98d1476b"/>
+				<box rightPadding="1">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($F{pbb_yg_harus_dibayar_sppt})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="533" y="0" width="83" height="17" uuid="7f8a5a70-be27-4ff2-ac0f-7739a0131d24"/>
+				<box rightPadding="1">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($F{nil_denda_normal})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="699" y="0" width="90" height="17" uuid="025911b0-5e93-45e2-9a9d-2698b1ec0426"/>
+				<box rightPadding="1">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($F{jml_sppt_yg_dibayar})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToTallestObject" x="247" y="0" width="196" height="17" uuid="e9e53b62-51f7-4d84-bf0d-372a1aca9491"/>
+				<box topPadding="0" leftPadding="2" rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_wp_sppt}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToTallestObject" x="137" y="0" width="110" height="17" uuid="fff6f63c-0f17-4cc7-9bc5-2bc819c3c8b3"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nopd}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="616" y="0" width="83" height="17" uuid="18d51305-0f63-48a3-a27d-c0f9678dbc20"/>
+				<box rightPadding="1">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineColor="#FFFFFF"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($F{nil_denda_yg_dihapus})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="664" y="3" width="86" height="14" uuid="946f9873-f29f-49e1-b4e6-9cb08dd8e831"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{PAGE_NUMBER})+" dari "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="755" y="3" width="24" height="14" uuid="b471fe03-9b17-4842-ba40-9c19e80ff044"/>
+				<textElement>
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="3" width="190" height="12" uuid="e6ad7dbf-c883-4680-93fc-957c2ba7af0a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[rincian harian]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="122" splitType="Stretch">
+			<textField>
+				<reportElement x="443" y="0" width="90" height="20" uuid="43a68d76-5352-404c-b09f-d289fe26d0f3"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumpokok_tot})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="247" height="20" uuid="81291055-a265-4f25-bf0c-72be001e4c2f"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="533" y="0" width="83" height="20" uuid="74add423-acc8-495f-9772-a0e416c642e9"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumdenda_tot})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="699" y="0" width="90" height="20" uuid="32ed8d7b-d5d7-445a-a902-ed44da73c941"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumbayar_tot})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="616" y="0" width="83" height="20" uuid="2886a955-8913-413f-af81-4b8794236119"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sumdenda_dihapus_tot})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="580" y="30" width="190" height="16" uuid="0bbfc188-0f72-4024-837b-f5ef15ebaad2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Plt. KEPALA,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="580" y="80" width="190" height="16" uuid="05f32577-44e4-405b-ab46-56fee9aad179"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARIF RAHMAN]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="247" y="0" width="196" height="20" uuid="258a46bd-3889-469f-a6ce-bfe8f7d914f6"/>
+				<box rightPadding="2">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{sum_nopd_tot})]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

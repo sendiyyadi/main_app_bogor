@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>Under Constructor</title>
+
+	<style>
+		body{
+			background: #333333;
+		}
+		.atas{
+			font-family: arial;
+			font-size: 30pt;
+			color: #cccccc;
+			position: relative;
+			transition: 1s;
+			opacity: 0;
+		}
+		.bawah{
+			font-family: arial;
+			font-size: 30pt;
+			color: #cccccc;
+			text-align: right;
+		}
+		img{
+			size: 100%;
+			height: auto;
+		}
+		.gambar{
+			text-align: center;
+		}
+		.bungkus{
+			margin-top: 5%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div  class="bungkus">
+		<div id="Atas" class="atas">
+			Maaf halaman ini sedang dalam perbaikan
+		</div>
+		<div class="gambar"><img src="gambar.png"></div>
+
+		<div class="bawah">Terima kasih atas kunjungan anda</div>
+	</div>
+	<script>
+	//13% - 110%
+		var Atas = document.getElementById("Atas");
+		
+		setInterval(
+			function(){
+				var op = Atas.style.opacity;		
+				if(op==1){
+			 		Atas.style.opacity=0;
+			 	}else{
+			 		Atas.style.opacity=1;
+			 	}
+			}, 2000);
+	</script>
+</body>
+</html>

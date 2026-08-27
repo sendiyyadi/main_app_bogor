@@ -1,0 +1,9 @@
+# OS X / Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# PHP / CodeIgniter
+/temp/
+.vscode/

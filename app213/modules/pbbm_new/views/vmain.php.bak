@@ -1,0 +1,162 @@
+<?php  $this->load->view('_head'); ?>
+<?php  $this->load->view(active_module().'/_navbar'); ?>
+<script>
+
+    function get_realisasi() {
+        var kec_kd = "<?php echo $kec_kd;?>";
+        var kel_kd = "<?php echo $kel_kd;?>";
+        var params = "kec_kd=" + kec_kd + "&kel_kd=" + kel_kd;
+         
+        $.ajax({
+            url: "<?php echo active_module_url($this->uri->segment(2))?>get_realisasi?"+params,
+            async: true,
+            success: function (j) {
+                var data = $.parseJSON(j);
+                $('#amt_daily').html('Rp. '+data['amt_daily']);
+                $('#amt_weekly').html('Rp. '+data['amt_weekly']);
+                $('#amt_monthly').html('Rp. '+data['amt_monthly']);
+                $('#amt_yearly').html('Rp. '+data['amt_yearly']);
+                
+                $('#tetap').html('Rp. '+data['tetap']);
+                $('#pokok').html('Rp. '+data['pokok']);
+                $('#piutang').html('Rp. '+data['piutang']);
+                $('#denda').html('Rp. '+data['denda']);
+            },
+            error: function (xhr, desc, er) {
+                alert(er);
+            }
+        });
+    }
+
+        
+    $(document).ready(function() {
+      $("#kec_kd, #kel_kd, #tahun, #buku").change(function(){
+         var kec_kd = $("#kec_kd").val();
+         var params = "kec_kd=" + kec_kd;
+         
+         if($(this).attr('id')=='kel_kd')
+             params = params + "&kel_kd=" + $(this).val();
+         
+         window.location = "<?php echo active_module_url();?>?" + params;
+    
+      });
+      
+      get_realisasi();
+    });
+</script>
+<div class="content">
+	<div class="container-fluid">		
+		<?php echo msg_block();?>
+  		
+		<div class="well">
+            
+            <center>
+                <div class="span12">
+                    <div class="row">
+                       <div class="control-group">
+                            <div class="controls">
+                                Kecamatan 
+                                <select id="kec_kd" name="kec_kd"><?php echo $kecamatans;?></select> 
+                                Kelurahan
+                                <select id="kel_kd" name="kel_kd"><?php echo $kelurahans;?></select> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </center>
+                
+            <center>
+                <div class="row">
+                    <div class="span12">
+                        <div class="row">
+                            <div class="span2">
+                                &nbsp;
+                            </div>
+                            
+                            <div class="span8">
+                                <center>
+                                    <h3>Penerimaan Pembayaran PBB</h3>
+                                    <h3>Tahun <?php echo $tahun;?></h3>
+                                </center>
+                                
+                                <div class="row">
+                                    <div class="span4">
+                                        <div class="alert alert-success">
+                                            <h4><u>Hari ini</u></h4>
+                                            <h2 id="amt_daily"><span class="label label-success">sedang menghitung...</span></h2>
+                                        </div>				
+                                    </div>
+                                    <div class="span4">
+                                        <div class="alert alert-info">
+                                            <h4><u>Minggu ini</u></h4>
+                                            <h2 id="amt_weekly"><span class="label label-info">sedang menghitung...</span></h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="span4">
+                                        <div class="alert alert-warning">
+                                            <h4><u>Bulan ini</u></h4>
+                                            <h2 id="amt_monthly"><span class="label label-warning">sedang menghitung...</span></h2>
+                                        </div>				
+                                    </div>
+                                    <div class="span4">
+                                        <div class="alert alert-error">
+                                            <h4><u>Tahun ini</u></h4>
+                                            <h2 id="amt_yearly"><span class="label label-error">sedang menghitung...</span></h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="span2">
+                                &nbsp;
+                            </div>
+                            <div class="span8">
+                                <center>
+                                    <h3>Kelompok</h3>
+                                </center>
+                                
+                                <div class="row">
+                                    <div class="span4">
+                                        <div class="alert alert-error">
+                                            <h4><u>Ketetapan <?php echo $tahun;?></u></h4>
+                                            <h2 id="tetap"><span class="label label-error">sedang menghitung...</span></h2>
+                                        </div>
+                                    </div>
+
+                                    <div class="span4">
+                                        <div class="alert alert-success">
+                                            <h4><u>Realisasi Pokok <?php echo $tahun;?></u></h4>
+                                            <h2 id="pokok"><span class="label label-success">sedang menghitung...</span></h2>
+                                        </div>				
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="span4">
+                                        <div class="alert alert-info">
+                                            <h4><u>Realisasi Piutang</u></h4>
+                                            <h2 id="piutang"><span class="label label-info">sedang menghitung...</span></h2>
+                                        </div>
+                                    </div>
+                                    <div class="span4">
+                                        <div class="alert alert-warning">
+                                            <h4><u>Realisasi Denda</u></h4>
+                                            <h2 id="denda"><span class="label label-warning">sedang menghitung...</span></h2>
+                                        </div>				
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </center>
+		</div>
+	</div>
+	
+</div>
+<?php  $this->load->view('_foot'); ?>

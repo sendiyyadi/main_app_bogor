@@ -1,0 +1,1497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sppt_rpt" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7e4c4947-3383-4c94-8927-c49abfb86d1b">
+	<property name="ireport.zoom" value="1.6105100000000179"/>
+	<property name="ireport.x" value="108"/>
+	<property name="ireport.y" value="741"/>
+	<property name="ireport.background.image.properties" value="true,true,1.0,-8,-8,0,0,611,954"/>
+	<parameter name="background_img" class="java.lang.String"/>
+	<parameter name="terbilang_bayarpbb" class="java.lang.String"/>
+	<parameter name="kd_prop" class="java.lang.String"/>
+	<parameter name="kd_dati2" class="java.lang.String"/>
+	<parameter name="kd_kecamatan" class="java.lang.String"/>
+	<parameter name="kd_kelurahan" class="java.lang.String"/>
+	<parameter name="kd_blok" class="java.lang.String"/>
+	<parameter name="no_urut" class="java.lang.String"/>
+	<parameter name="kd_jns_op" class="java.lang.String"/>
+	<parameter name="nm_pejabat" class="java.lang.String"/>
+	<parameter name="nip_pejabat" class="java.lang.String"/>
+	<parameter name="img_qr" class="java.lang.String"/>
+	<parameter name="blanko_back" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="logo_bsre" class="java.lang.String"/>
+	<parameter name="tahun_sppt" class="java.lang.String"/>
+	<parameter name="tahun_sppt_1" class="java.lang.String"/>
+	<parameter name="tahun_sppt_2" class="java.lang.String"/>
+	<parameter name="tahun_sppt_3" class="java.lang.String"/>
+	<parameter name="tahun_sppt_4" class="java.lang.String"/>
+	<parameter name="tahun_sppt_5" class="java.lang.String"/>
+	<parameter name="tahun_sppt_6" class="java.lang.String"/>
+	<parameter name="blanko_back2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+  'HEAD' AS XXX,
+  ROW_NUMBER() OVER (
+    ORDER BY
+      S.THN_PAJAK_SPPT DESC
+  ) URUT_X,
+  S.KD_PROPINSI || '.' || S.KD_DATI2 || '.' || S.KD_KECAMATAN || '.' || S.KD_KELURAHAN || '.' || S.KD_BLOK || '.' || S.NO_URUT || '.' || S.KD_JNS_OP AS NOP,
+  S.THN_PAJAK_SPPT,
+  S.NM_WP_SPPT,
+  S.JLN_WP_SPPT,
+  NVL(S.BLOK_KAV_NO_WP_SPPT, ' ') AS BLOK_KAV_NO_WP_SPPT,
+  NVL(S.RT_WP_SPPT, ' ') AS RT_WP_SPPT,
+  NVL(S.RW_WP_SPPT, ' ') AS RW_WP_SPPT,
+  NVL(S.KELURAHAN_WP_SPPT, ' ') AS KELURAHAN_WP_SPPT,
+  NVL(S.KOTA_WP_SPPT, ' ') AS KOTA_WP_SPPT,
+  S.TGL_CETAK_SPPT,
+  OP.JALAN_OP,
+  NVL(OP.BLOK_KAV_NO_OP, ' ') AS BLOK_KAV_NO_OP,
+  NVL(OP.RT_OP, ' ') AS RT_OP,
+  NVL(OP.RW_OP, ' ') AS RW_OP,
+  KEC_OP.NM_KECAMATAN AS KECAMATAN_OP,
+  KEL_OP.NM_KELURAHAN AS KELURAHAN_OP,
+  DT_OP.NM_DATI2,
+  S.LUAS_BUMI_SPPT,
+  S.NJOP_BUMI_SPPT,
+  S.LUAS_BNG_SPPT,
+  S.NJOP_BNG_SPPT,
+  S.NJOP_SPPT,
+  S.NJOPTKP_SPPT,
+  (S.NJOP_SPPT - S.NJOPTKP_SPPT) AS NJOPKP_SPPT,
+  S.TARIF_SPPT,
+  S.PBB_TERHUTANG_SPPT,
+  S.FAKTOR_PENGURANG_SPPT,
+  S.PBB_YG_HARUS_DIBAYAR_SPPT,
+  S.KD_KLS_BNG,
+  S.KD_KLS_TANAH,
+  CASE WHEN S.FAKTOR_PENGURANG_SPPT > 0 THEN S.FAKTOR_PENGURANG_SPPT ELSE NULL END AS FAKTOR_PENGURANG_SPPT_2,
+  CASE WHEN S.FAKTOR_PENGURANG_SPPT > 0 THEN 'Faktor Pengurang/Kebijakan Pengenaan' ELSE '' END AS TXT_FAKTOR_PENGURANG,
+  TERBILANG(S.PBB_YG_HARUS_DIBAYAR_SPPT) AS TXT_TERBILANG,
+  FMT_TGL_TEKS(S.TGL_JATUH_TEMPO_SPPT) AS TGL_JATUH_TEMPO,
+  FMT_TGL_TEKS(SYSDATE) AS TGL_CETAK,
+  FMT_TGL_TEKS(S.TGL_CETAK_SPPT) AS TGL_CETAK_SPPT_2,
+  SP1.THN_PAJAK_SPPT THN1,
+  NVL(
+    SP1.PBB_YG_HARUS_DIBAYAR_SPPT, 0
+  ) AS POKOK1,
+  NVL(SP1.DENDA_SPPT, 0) AS DENDA1,
+  CASE WHEN SP1.SISA <= 0 THEN 0 ELSE NVL(SP1.SISA, 0) END AS SISA1,
+  SP2.THN_PAJAK_SPPT THN2,
+  NVL(
+    SP2.PBB_YG_HARUS_DIBAYAR_SPPT, 0
+  ) AS POKOK2,
+  NVL(SP2.DENDA_SPPT, 0) AS DENDA2,
+  CASE WHEN SP2.SISA <= 0 THEN 0 ELSE NVL(SP2.SISA, 0) END AS SISA2,
+  SP3.THN_PAJAK_SPPT THN3,
+  NVL(
+    SP3.PBB_YG_HARUS_DIBAYAR_SPPT, 0
+  ) AS POKOK3,
+  NVL(SP3.DENDA_SPPT, 0) AS DENDA3,
+  CASE WHEN SP3.SISA <= 0 THEN 0 ELSE NVL(SP3.SISA, 0) END AS SISA3,
+  SP4.THN_PAJAK_SPPT THN4,
+  NVL(
+    SP4.PBB_YG_HARUS_DIBAYAR_SPPT, 0
+  ) AS POKOK4,
+  NVL(SP4.DENDA_SPPT, 0) AS DENDA4,
+  CASE WHEN SP4.SISA <= 0 THEN 0 ELSE NVL(SP4.SISA, 0) END AS SISA4,
+  SP5.THN_PAJAK_SPPT THN5,
+  NVL(
+    SP5.PBB_YG_HARUS_DIBAYAR_SPPT, 0
+  ) AS POKOK5,
+  NVL(SP5.DENDA_SPPT, 0) AS DENDA5,
+  CASE WHEN SP5.SISA <= 0 THEN 0 ELSE NVL(SP5.SISA, 0) END AS SISA5,
+  $P{tahun_sppt_6} THN6,
+  NVL(
+    SPM.PBB_YG_HARUS_DIBAYAR_SPPT, 0
+  ) AS POKOK6,
+  NVL(SPM.DENDA_SPPT, 0) AS DENDA6,
+  CASE WHEN SPM.SISA <= 0 THEN 0 ELSE NVL(SPM.SISA, 0) END AS SISA6,
+  0 AS JML_BAYAR,
+  '' AS TGL_BAYAR,
+  '' AS STS_BYR ,
+  CASE WHEN (
+                SOB.LUAS_BUMI_BEBAN_SPPT IS NULL
+                OR SOB.LUAS_BUMI_BEBAN_SPPT <= 0
+              ) THEN 0 ELSE ROUND(
+                SOB.NJOP_BUMI_BEBAN_SPPT / SOB.LUAS_BUMI_BEBAN_SPPT
+              ) END AS NJOPMB,
+              CASE WHEN (
+                SOB.LUAS_BNG_BEBAN_SPPT IS NULL
+                OR SOB.LUAS_BNG_BEBAN_SPPT <= 0
+              ) THEN 0 ELSE ROUND(
+                SOB.NJOP_BNG_BEBAN_SPPT / SOB.LUAS_BNG_BEBAN_SPPT
+              ) END AS NJOPMBNG,SOB.NJOP_BNG_BEBAN_SPPT,SOB.NJOP_BUMI_BEBAN_SPPT,SOB.LUAS_BUMI_BEBAN_SPPT,
+              SOB.LUAS_BNG_BEBAN_SPPT
+FROM
+  SPPT S
+  LEFT JOIN (
+    SELECT
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP,
+      S1.THN_PAJAK_SPPT,
+      S1.PBB_YG_HARUS_DIBAYAR_SPPT,
+      PS1.DENDA_SPPT,
+      (
+        S1.PBB_YG_HARUS_DIBAYAR_SPPT - S1.FAKTOR_PENGURANG_SPPT - PS1.JML_SPPT_YG_DIBAYAR
+      ) AS SISA
+    FROM
+      SPPT S1
+      LEFT JOIN PEMBAYARAN_SPPT PS1 ON S1.KD_PROPINSI = PS1.KD_PROPINSI
+      AND S1.KD_DATI2 = PS1.KD_DATI2
+      AND S1.KD_KECAMATAN = PS1.KD_KECAMATAN
+      AND S1.KD_KELURAHAN = PS1.KD_KELURAHAN
+      AND S1.KD_BLOK = PS1.KD_BLOK
+      AND S1.NO_URUT = PS1.NO_URUT
+      AND S1.KD_JNS_OP = PS1.KD_JNS_OP
+      AND S1.THN_PAJAK_SPPT = PS1.THN_PAJAK_SPPT
+    WHERE
+      S1.KD_PROPINSI =$P{kd_prop}
+      AND S1.KD_DATI2 = $P{kd_dati2}
+      AND S1.KD_KECAMATAN = $P{kd_kecamatan}
+      AND S1.KD_KELURAHAN = $P{kd_kelurahan}
+      AND S1.KD_BLOK = $P{kd_blok}
+      AND S1.NO_URUT = $P{no_urut}
+      AND S1.KD_JNS_OP = $P{kd_jns_op}
+      AND S1.THN_PAJAK_SPPT = $P{tahun_sppt_1}
+  ) SP1 ON SP1.KD_PROPINSI = S.KD_PROPINSI
+  AND SP1.KD_DATI2 = S.KD_DATI2
+  AND SP1.KD_KECAMATAN = S.KD_KECAMATAN
+  AND SP1.KD_KELURAHAN = S.KD_KELURAHAN
+  AND SP1.KD_BLOK = S.KD_BLOK
+  AND SP1.NO_URUT = S.NO_URUT
+  AND SP1.KD_JNS_OP = S.KD_JNS_OP
+  LEFT JOIN (
+    SELECT
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP,
+      S1.THN_PAJAK_SPPT,
+      S1.PBB_YG_HARUS_DIBAYAR_SPPT,
+      PS1.DENDA_SPPT,
+      (
+        S1.PBB_YG_HARUS_DIBAYAR_SPPT - S1.FAKTOR_PENGURANG_SPPT - PS1.JML_SPPT_YG_DIBAYAR
+      ) AS SISA
+    FROM
+      SPPT S1
+      LEFT JOIN PEMBAYARAN_SPPT PS1 ON S1.KD_PROPINSI = PS1.KD_PROPINSI
+      AND S1.KD_DATI2 = PS1.KD_DATI2
+      AND S1.KD_KECAMATAN = PS1.KD_KECAMATAN
+      AND S1.KD_KELURAHAN = PS1.KD_KELURAHAN
+      AND S1.KD_BLOK = PS1.KD_BLOK
+      AND S1.NO_URUT = PS1.NO_URUT
+      AND S1.KD_JNS_OP = PS1.KD_JNS_OP
+      AND S1.THN_PAJAK_SPPT = PS1.THN_PAJAK_SPPT
+    WHERE
+      S1.KD_PROPINSI = $P{kd_prop}
+      AND S1.KD_DATI2 = $P{kd_dati2}
+      AND S1.KD_KECAMATAN = $P{kd_kecamatan}
+      AND S1.KD_KELURAHAN = $P{kd_kelurahan}
+      AND S1.KD_BLOK = $P{kd_blok}
+      AND S1.NO_URUT = $P{no_urut}
+      AND S1.KD_JNS_OP = $P{kd_jns_op}
+      AND S1.THN_PAJAK_SPPT = $P{tahun_sppt_2}
+  ) SP2 ON SP2.KD_PROPINSI = S.KD_PROPINSI
+  AND SP2.KD_DATI2 = S.KD_DATI2
+  AND SP2.KD_KECAMATAN = S.KD_KECAMATAN
+  AND SP2.KD_KELURAHAN = S.KD_KELURAHAN
+  AND SP2.KD_BLOK = S.KD_BLOK
+  AND SP2.NO_URUT = S.NO_URUT
+  AND SP2.KD_JNS_OP = S.KD_JNS_OP
+  LEFT JOIN (
+    SELECT
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP,
+      S1.THN_PAJAK_SPPT,
+      S1.PBB_YG_HARUS_DIBAYAR_SPPT,
+      PS1.DENDA_SPPT,
+      (
+        S1.PBB_YG_HARUS_DIBAYAR_SPPT - S1.FAKTOR_PENGURANG_SPPT - PS1.JML_SPPT_YG_DIBAYAR
+      ) AS SISA
+    FROM
+      SPPT S1
+      LEFT JOIN PEMBAYARAN_SPPT PS1 ON S1.KD_PROPINSI = PS1.KD_PROPINSI
+      AND S1.KD_DATI2 = PS1.KD_DATI2
+      AND S1.KD_KECAMATAN = PS1.KD_KECAMATAN
+      AND S1.KD_KELURAHAN = PS1.KD_KELURAHAN
+      AND S1.KD_BLOK = PS1.KD_BLOK
+      AND S1.NO_URUT = PS1.NO_URUT
+      AND S1.KD_JNS_OP = PS1.KD_JNS_OP
+      AND S1.THN_PAJAK_SPPT = PS1.THN_PAJAK_SPPT
+    WHERE
+      S1.KD_PROPINSI = $P{kd_prop}
+      AND S1.KD_DATI2 = $P{kd_dati2}
+      AND S1.KD_KECAMATAN = $P{kd_kecamatan}
+      AND S1.KD_KELURAHAN = $P{kd_kelurahan}
+      AND S1.KD_BLOK = $P{kd_blok}
+      AND S1.NO_URUT = $P{no_urut}
+      AND S1.KD_JNS_OP = $P{kd_jns_op}
+      AND S1.THN_PAJAK_SPPT = $P{tahun_sppt_3}
+  ) SP3 ON SP3.KD_PROPINSI = S.KD_PROPINSI
+  AND SP3.KD_DATI2 = S.KD_DATI2
+  AND SP3.KD_KECAMATAN = S.KD_KECAMATAN
+  AND SP3.KD_KELURAHAN = S.KD_KELURAHAN
+  AND SP3.KD_BLOK = S.KD_BLOK
+  AND SP3.NO_URUT = S.NO_URUT
+  AND SP3.KD_JNS_OP = S.KD_JNS_OP
+  LEFT JOIN (
+    SELECT
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP,
+      S1.THN_PAJAK_SPPT,
+      S1.PBB_YG_HARUS_DIBAYAR_SPPT,
+      PS1.DENDA_SPPT,
+      (
+        S1.PBB_YG_HARUS_DIBAYAR_SPPT - S1.FAKTOR_PENGURANG_SPPT - PS1.JML_SPPT_YG_DIBAYAR
+      ) AS SISA
+    FROM
+      SPPT S1
+      LEFT JOIN PEMBAYARAN_SPPT PS1 ON S1.KD_PROPINSI = PS1.KD_PROPINSI
+      AND S1.KD_DATI2 = PS1.KD_DATI2
+      AND S1.KD_KECAMATAN = PS1.KD_KECAMATAN
+      AND S1.KD_KELURAHAN = PS1.KD_KELURAHAN
+      AND S1.KD_BLOK = PS1.KD_BLOK
+      AND S1.NO_URUT = PS1.NO_URUT
+      AND S1.KD_JNS_OP = PS1.KD_JNS_OP
+      AND S1.THN_PAJAK_SPPT = PS1.THN_PAJAK_SPPT
+    WHERE
+      S1.KD_PROPINSI = $P{kd_prop}
+      AND S1.KD_DATI2 = $P{kd_dati2}
+      AND S1.KD_KECAMATAN = $P{kd_kecamatan}
+      AND S1.KD_KELURAHAN = $P{kd_kelurahan}
+      AND S1.KD_BLOK = $P{kd_blok}
+      AND S1.NO_URUT = $P{no_urut}
+      AND S1.KD_JNS_OP = $P{kd_jns_op}
+      AND S1.THN_PAJAK_SPPT = $P{tahun_sppt_4}
+  ) SP4 ON SP4.KD_PROPINSI = S.KD_PROPINSI
+  AND SP4.KD_DATI2 = S.KD_DATI2
+  AND SP4.KD_KECAMATAN = S.KD_KECAMATAN
+  AND SP4.KD_KELURAHAN = S.KD_KELURAHAN
+  AND SP4.KD_BLOK = S.KD_BLOK
+  AND SP4.NO_URUT = S.NO_URUT
+  AND SP4.KD_JNS_OP = S.KD_JNS_OP
+  LEFT JOIN (
+    SELECT
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP,
+      S1.THN_PAJAK_SPPT,
+      S1.PBB_YG_HARUS_DIBAYAR_SPPT,
+      PS1.DENDA_SPPT,
+      (
+        S1.PBB_YG_HARUS_DIBAYAR_SPPT - S1.FAKTOR_PENGURANG_SPPT - PS1.JML_SPPT_YG_DIBAYAR
+      ) AS SISA
+    FROM
+      SPPT S1
+      LEFT JOIN PEMBAYARAN_SPPT PS1 ON S1.KD_PROPINSI = PS1.KD_PROPINSI
+      AND S1.KD_DATI2 = PS1.KD_DATI2
+      AND S1.KD_KECAMATAN = PS1.KD_KECAMATAN
+      AND S1.KD_KELURAHAN = PS1.KD_KELURAHAN
+      AND S1.KD_BLOK = PS1.KD_BLOK
+      AND S1.NO_URUT = PS1.NO_URUT
+      AND S1.KD_JNS_OP = PS1.KD_JNS_OP
+      AND S1.THN_PAJAK_SPPT = PS1.THN_PAJAK_SPPT
+    WHERE
+      S1.KD_PROPINSI = $P{kd_prop}
+      AND S1.KD_DATI2 = $P{kd_dati2}
+      AND S1.KD_KECAMATAN = $P{kd_kecamatan}
+      AND S1.KD_KELURAHAN = $P{kd_kelurahan}
+      AND S1.KD_BLOK = $P{kd_blok}
+      AND S1.NO_URUT = $P{no_urut}
+      AND S1.KD_JNS_OP = $P{kd_jns_op}
+      AND S1.THN_PAJAK_SPPT = $P{tahun_sppt_5}
+  ) SP5 ON SP5.KD_PROPINSI = S.KD_PROPINSI
+  AND SP5.KD_DATI2 = S.KD_DATI2
+  AND SP5.KD_KECAMATAN = S.KD_KECAMATAN
+  AND SP5.KD_KELURAHAN = S.KD_KELURAHAN
+  AND SP5.KD_BLOK = S.KD_BLOK
+  AND SP5.NO_URUT = S.NO_URUT
+  AND SP5.KD_JNS_OP = S.KD_JNS_OP
+  LEFT JOIN (
+    SELECT
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP,
+      SUM(S1.PBB_YG_HARUS_DIBAYAR_SPPT) AS PBB_YG_HARUS_DIBAYAR_SPPT,
+      SUM(PS1.DENDA_SPPT) AS DENDA_SPPT,
+      (
+        SUM(S1.PBB_YG_HARUS_DIBAYAR_SPPT) - SUM(PS1.JML_SPPT_YG_DIBAYAR)
+      ) AS SISA_2,
+      (
+        SUM(S1.PBB_YG_HARUS_DIBAYAR_SPPT) - SUM(S1.FAKTOR_PENGURANG_SPPT) - (
+          SUM(PS1.JML_SPPT_YG_DIBAYAR) - SUM(PS1.DENDA_SPPT)
+        )
+      ) as SISA
+    FROM
+      SPPT S1
+      LEFT JOIN PEMBAYARAN_SPPT PS1 ON S1.KD_PROPINSI = PS1.KD_PROPINSI
+      AND S1.KD_DATI2 = PS1.KD_DATI2
+      AND S1.KD_KECAMATAN = PS1.KD_KECAMATAN
+      AND S1.KD_KELURAHAN = PS1.KD_KELURAHAN
+      AND S1.KD_BLOK = PS1.KD_BLOK
+      AND S1.NO_URUT = PS1.NO_URUT
+      AND S1.KD_JNS_OP = PS1.KD_JNS_OP
+      AND S1.THN_PAJAK_SPPT = PS1.THN_PAJAK_SPPT
+    WHERE
+      S1.KD_PROPINSI = $P{kd_prop}
+      AND S1.KD_DATI2 = $P{kd_dati2}
+      AND S1.KD_KECAMATAN = $P{kd_kecamatan}
+      AND S1.KD_KELURAHAN = $P{kd_kelurahan}
+      AND S1.KD_BLOK = $P{kd_blok}
+      AND S1.NO_URUT = $P{no_urut}
+      AND S1.KD_JNS_OP = $P{kd_jns_op}
+      AND S1.THN_PAJAK_SPPT <= $P{tahun_sppt_6}
+    GROUP BY
+      S1.KD_PROPINSI,
+      S1.KD_DATI2,
+      S1.KD_KECAMATAN,
+      S1.KD_KELURAHAN,
+      S1.KD_BLOK,
+      S1.NO_URUT,
+      S1.KD_JNS_OP
+  ) SPM ON SPM.KD_PROPINSI = S.KD_PROPINSI
+  AND SPM.KD_DATI2 = S.KD_DATI2
+  AND SPM.KD_KECAMATAN = S.KD_KECAMATAN
+  AND SPM.KD_KELURAHAN = S.KD_KELURAHAN
+  AND SPM.KD_BLOK = S.KD_BLOK
+  AND SPM.NO_URUT = S.NO_URUT
+  AND SPM.KD_JNS_OP = S.KD_JNS_OP
+  JOIN DAT_OBJEK_PAJAK OP ON S.KD_PROPINSI = OP.KD_PROPINSI
+  AND S.KD_DATI2 = OP.KD_DATI2
+  AND S.KD_KECAMATAN = OP.KD_KECAMATAN
+  AND S.KD_KELURAHAN = OP.KD_KELURAHAN
+  AND S.KD_BLOK = OP.KD_BLOK
+  AND S.NO_URUT = OP.NO_URUT
+  JOIN REF_DATI2 DT_OP ON DT_OP.KD_PROPINSI = OP.KD_PROPINSI
+  AND DT_OP.KD_DATI2 = OP.KD_DATI2
+  JOIN REF_KECAMATAN KEC_OP ON KEC_OP.KD_PROPINSI = OP.KD_PROPINSI
+  AND KEC_OP.KD_DATI2 = OP.KD_DATI2
+  AND KEC_OP.KD_KECAMATAN = OP.KD_KECAMATAN
+  JOIN REF_KELURAHAN KEL_OP ON KEL_OP.KD_PROPINSI = OP.KD_PROPINSI
+  AND KEL_OP.KD_DATI2 = OP.KD_DATI2
+  AND KEL_OP.KD_KECAMATAN = OP.KD_KECAMATAN
+  AND KEL_OP.KD_KELURAHAN = OP.KD_KELURAHAN
+  LEFT JOIN SPPT_OP_BERSAMA SOB ON (
+                S.KD_PROPINSI = SOB.KD_PROPINSI
+                AND S.KD_DATI2 = SOB.KD_DATI2
+                AND S.KD_KECAMATAN = SOB.KD_KECAMATAN
+                AND S.KD_KELURAHAN = SOB.KD_KELURAHAN
+                AND S.KD_BLOK = SOB.KD_BLOK
+                AND S.NO_URUT = SOB.NO_URUT
+                AND S.KD_JNS_OP = SOB.KD_JNS_OP
+                AND S.THN_PAJAK_SPPT = SOB.THN_PAJAK_SPPT
+              )
+WHERE
+  S.KD_PROPINSI = $P{kd_prop}
+  AND S.KD_DATI2 = $P{kd_dati2}
+  AND S.KD_KECAMATAN = $P{kd_kecamatan}
+  AND S.KD_KELURAHAN = $P{kd_kelurahan}
+  AND S.KD_BLOK = $P{kd_blok}
+  AND S.NO_URUT = $P{no_urut}
+  AND S.KD_JNS_OP = $P{kd_jns_op}
+  AND S.THN_PAJAK_SPPT = $P{tahun_sppt}
+UNION ALL
+SELECT
+  'DETAIL' AS XXX,
+  ROW_NUMBER() OVER (
+    ORDER BY
+      S.THN_PAJAK_SPPT DESC
+  ) URUT_X,
+  S.KD_PROPINSI || '.' || S.KD_DATI2 || '.' || S.KD_KECAMATAN || '.' || S.KD_KELURAHAN || '.' || S.KD_BLOK || '.' || S.NO_URUT || '.' || S.KD_JNS_OP AS NOP,
+  S.THN_PAJAK_SPPT,
+  S.NM_WP_SPPT,
+  S.JLN_WP_SPPT,
+  '' AS BLOK_KAV_NO_WP_SPPT,
+  '' AS RT_WP_SPPT,
+  '' AS RW_WP_SPPT,
+  '' AS KELURAHAN_WP_SPPT,
+  '' AS KOTA_WP_SPPT,
+  S.TGL_CETAK_SPPT,
+  '' AS JALAN_OP,
+  '' AS BLOK_KAV_NO_OP,
+  '' AS RT_OP,
+  '' AS RW_OP,
+  '' AS KECAMATAN_OP,
+  '' AS KELURAHAN_OP,
+  '' AS NM_DATI2,
+  0 AS LUAS_BUMI_SPPT,
+  0 AS NJOP_BUMI_SPPT,
+  0 AS LUAS_BNG_SPPT,
+  0 AS NJOP_BNG_SPPT,
+  0 AS NJOP_SPPT,
+  0 AS NJOPTKP_SPPT,
+  0 AS NJOPKP_SPPT,
+  0 AS TARIF_SPPT,
+  S.PBB_TERHUTANG_SPPT,
+  S.FAKTOR_PENGURANG_SPPT,
+  S.PBB_YG_HARUS_DIBAYAR_SPPT,
+  '' AS KD_KLS_BNG,
+  '' AS KD_KLS_TANAH,
+  NULL AS FAKTOR_PENGURANG_SPPT_2,
+  '' AS TXT_FAKTOR_PENGURANG,
+  '' AS TXT_TERBILANG,
+  '' AS TGL_JATUH_TEMPO,
+  FMT_TGL_TEKS(SYSDATE) AS TGL_CETAK,
+  '' AS TGL_CETAK_SPPT_2,
+  '' AS THN1,
+  0 AS POKOK1,
+  0 AS DENDA1,
+  0 AS SISA1,
+  '' AS THN2,
+  0 AS POKOK2,
+  0 AS DENDA2,
+  0 AS SISA2,
+  '' AS THN3,
+  0 AS POKOK3,
+  0 AS DENDA3,
+  0 AS SISA3,
+  '' AS THN4,
+  0 AS POKOK4,
+  0 AS DENDA4,
+  0 AS SISA4,
+  '' AS THN5,
+  0 AS POKOK5,
+  0 AS DENDA5,
+  0 AS SISA5,
+  '' AS THN6,
+  0 AS POKOK6,
+  0 AS DENDA6,
+  0 AS SISA6,
+  PS.JML_BAYAR,
+  TO_CHAR(PS.TGL_BAYAR, 'DD-MM-YYYY') AS TGL_BAYAR,
+  CASE WHEN PS.JML_BAYAR >= S.PBB_YG_HARUS_DIBAYAR_SPPT THEN 'LUNAS' ELSE 'BELUM LUNAS' END AS STS_BYR,
+  0 AS NJOPMB,
+  0 AS NJOPMBNG,
+  0 AS NJOP_BNG_BEBAN_SPPT,
+  0 AS NJOP_BUMI_BEBAN_SPPT,
+  0 AS LUAS_BUMI_BEBAN_SPPT,
+  0 AS LUAS_BNG_BEBAN_SPPT
+FROM
+  SPPT S
+  LEFT JOIN (
+    SELECT
+      KD_PROPINSI,
+      KD_DATI2,
+      KD_KECAMATAN,
+      KD_KELURAHAN,
+      KD_BLOK,
+      NO_URUT,
+      KD_JNS_OP,
+      THN_PAJAK_SPPT,
+      SUM(JML_SPPT_YG_DIBAYAR) AS JML_BAYAR,
+      MAX(TGL_PEMBAYARAN_SPPT) AS TGL_BAYAR
+    FROM
+      PEMBAYARAN_SPPT
+    GROUP BY
+      KD_PROPINSI,
+      KD_DATI2,
+      KD_KECAMATAN,
+      KD_KELURAHAN,
+      KD_BLOK,
+      NO_URUT,
+      KD_JNS_OP,
+      THN_PAJAK_SPPT
+  ) PS ON S.KD_PROPINSI = PS.KD_PROPINSI
+  AND S.KD_DATI2 = PS.KD_DATI2
+  AND S.KD_KECAMATAN = PS.KD_KECAMATAN
+  AND S.KD_KELURAHAN = PS.KD_KELURAHAN
+  AND S.KD_BLOK = PS.KD_BLOK
+  AND S.NO_URUT = PS.NO_URUT
+  AND S.KD_JNS_OP = PS.KD_JNS_OP
+  AND S.THN_PAJAK_SPPT = PS.THN_PAJAK_SPPT
+WHERE
+  S.KD_PROPINSI = $P{kd_prop}
+  AND S.KD_DATI2 = $P{kd_dati2}
+  AND S.KD_KECAMATAN = $P{kd_kecamatan}
+  AND S.KD_KELURAHAN = $P{kd_kelurahan}
+  AND S.KD_BLOK = $P{kd_blok}
+  AND S.NO_URUT = $P{no_urut}
+  AND S.KD_JNS_OP = $P{kd_jns_op}
+ORDER BY
+  THN_PAJAK_SPPT DESC]]>
+	</queryString>
+	<field name="XXX" class="java.lang.String"/>
+	<field name="URUT_X" class="java.math.BigDecimal"/>
+	<field name="NOP" class="java.lang.String"/>
+	<field name="THN_PAJAK_SPPT" class="java.lang.String"/>
+	<field name="NM_WP_SPPT" class="java.lang.String"/>
+	<field name="JLN_WP_SPPT" class="java.lang.String"/>
+	<field name="BLOK_KAV_NO_WP_SPPT" class="java.lang.String"/>
+	<field name="RT_WP_SPPT" class="java.lang.String"/>
+	<field name="RW_WP_SPPT" class="java.lang.String"/>
+	<field name="KELURAHAN_WP_SPPT" class="java.lang.String"/>
+	<field name="KOTA_WP_SPPT" class="java.lang.String"/>
+	<field name="TGL_CETAK_SPPT" class="java.sql.Timestamp"/>
+	<field name="JALAN_OP" class="java.lang.String"/>
+	<field name="BLOK_KAV_NO_OP" class="java.lang.String"/>
+	<field name="RT_OP" class="java.lang.String"/>
+	<field name="RW_OP" class="java.lang.String"/>
+	<field name="KECAMATAN_OP" class="java.lang.String"/>
+	<field name="KELURAHAN_OP" class="java.lang.String"/>
+	<field name="NM_DATI2" class="java.lang.String"/>
+	<field name="LUAS_BUMI_SPPT" class="java.math.BigDecimal"/>
+	<field name="NJOP_BUMI_SPPT" class="java.math.BigDecimal"/>
+	<field name="LUAS_BNG_SPPT" class="java.math.BigDecimal"/>
+	<field name="NJOP_BNG_SPPT" class="java.math.BigDecimal"/>
+	<field name="NJOP_SPPT" class="java.math.BigDecimal"/>
+	<field name="NJOPTKP_SPPT" class="java.math.BigDecimal"/>
+	<field name="NJOPKP_SPPT" class="java.math.BigDecimal"/>
+	<field name="TARIF_SPPT" class="java.math.BigDecimal"/>
+	<field name="PBB_TERHUTANG_SPPT" class="java.math.BigDecimal"/>
+	<field name="FAKTOR_PENGURANG_SPPT" class="java.math.BigDecimal"/>
+	<field name="PBB_YG_HARUS_DIBAYAR_SPPT" class="java.math.BigDecimal"/>
+	<field name="KD_KLS_BNG" class="java.lang.String"/>
+	<field name="KD_KLS_TANAH" class="java.lang.String"/>
+	<field name="FAKTOR_PENGURANG_SPPT_2" class="java.math.BigDecimal"/>
+	<field name="TXT_FAKTOR_PENGURANG" class="java.lang.String"/>
+	<field name="TXT_TERBILANG" class="java.lang.String"/>
+	<field name="TGL_JATUH_TEMPO" class="java.lang.String"/>
+	<field name="TGL_CETAK" class="java.lang.String"/>
+	<field name="TGL_CETAK_SPPT_2" class="java.lang.String"/>
+	<field name="THN1" class="java.lang.String"/>
+	<field name="POKOK1" class="java.math.BigDecimal"/>
+	<field name="DENDA1" class="java.math.BigDecimal"/>
+	<field name="SISA1" class="java.math.BigDecimal"/>
+	<field name="THN2" class="java.lang.String"/>
+	<field name="POKOK2" class="java.math.BigDecimal"/>
+	<field name="DENDA2" class="java.math.BigDecimal"/>
+	<field name="SISA2" class="java.math.BigDecimal"/>
+	<field name="THN3" class="java.lang.String"/>
+	<field name="POKOK3" class="java.math.BigDecimal"/>
+	<field name="DENDA3" class="java.math.BigDecimal"/>
+	<field name="SISA3" class="java.math.BigDecimal"/>
+	<field name="THN4" class="java.lang.String"/>
+	<field name="POKOK4" class="java.math.BigDecimal"/>
+	<field name="DENDA4" class="java.math.BigDecimal"/>
+	<field name="SISA4" class="java.math.BigDecimal"/>
+	<field name="THN5" class="java.lang.String"/>
+	<field name="POKOK5" class="java.math.BigDecimal"/>
+	<field name="DENDA5" class="java.math.BigDecimal"/>
+	<field name="SISA5" class="java.math.BigDecimal"/>
+	<field name="THN6" class="java.lang.String"/>
+	<field name="POKOK6" class="java.math.BigDecimal"/>
+	<field name="DENDA6" class="java.math.BigDecimal"/>
+	<field name="SISA6" class="java.math.BigDecimal"/>
+	<field name="JML_BAYAR" class="java.math.BigDecimal"/>
+	<field name="TGL_BAYAR" class="java.lang.String"/>
+	<field name="STS_BYR" class="java.lang.String"/>
+	<field name="NJOPMB" class="java.math.BigDecimal"/>
+	<field name="NJOPMBNG" class="java.math.BigDecimal"/>
+	<field name="NJOP_BNG_BEBAN_SPPT" class="java.math.BigDecimal"/>
+	<field name="NJOP_BUMI_BEBAN_SPPT" class="java.math.BigDecimal"/>
+	<field name="LUAS_BUMI_BEBAN_SPPT" class="java.math.BigDecimal"/>
+	<field name="LUAS_BNG_BEBAN_SPPT" class="java.math.BigDecimal"/>
+	<background>
+		<band height="800">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.equals( 1 )]]></printWhenExpression>
+			<image>
+				<reportElement x="39" y="0" width="516" height="800" uuid="e33e6bd7-16b8-40dc-8085-d7b2b722c0bf">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{background_img}]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="171" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{XXX} == "HEAD"]]></printWhenExpression>
+			<textField>
+				<reportElement x="489" y="37" width="100" height="20" uuid="18506312-c8c5-4aa1-881b-d70dd0ac3aef"/>
+				<textFieldExpression><![CDATA[$F{THN_PAJAK_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="86" width="209" height="85" uuid="e426a57b-f6e8-4b25-a2ee-35dff1f974e2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NM_WP_SPPT}+"\n"+
+$F{JLN_WP_SPPT}+" "+
+$F{BLOK_KAV_NO_WP_SPPT} +" \n"+
+"RT:"+$F{RT_WP_SPPT}+" RW:"+$F{RW_WP_SPPT}+"\n"+
+$F{KOTA_WP_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="106" y="59" width="170" height="20" uuid="82862672-4cf6-4a63-9e95-4249fa116b6e"/>
+				<textFieldExpression><![CDATA[$F{NOP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="83" y="86" width="198" height="85" uuid="787dc0df-69cb-43a2-b97e-64de9b5b5fa0"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{JALAN_OP}+" "+
+$F{BLOK_KAV_NO_OP} +"\n"+
+"RT:"+$F{RT_OP}+" RW:"+$F{RW_OP}+"\n"+
+$F{KELURAHAN_OP}+"\n"+$F{KECAMATAN_OP}+"\n"+$F{NM_DATI2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="122" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.equals( 1 ) && $F{XXX} == "HEAD"]]></printWhenExpression>
+			<textField pattern="#,##0">
+				<reportElement x="173" y="-5" width="60" height="12" uuid="5aae4484-5bd5-4a3b-a8d0-b1309e7f4441"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUAS_BUMI_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="238" y="-5" width="33" height="12" uuid="e331cb02-fa6c-4885-80d5-feb396d1385c"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{KD_KLS_TANAH}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="282" y="-5" width="100" height="12" uuid="7209fb5d-8f3e-45f7-87f6-bbb824b7b1ac"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUAS_BUMI_SPPT} > 0 ? new DecimalFormat("#,##0").format($F{NJOP_BUMI_SPPT}/$F{LUAS_BUMI_SPPT}).replace(",", "x").replace(".", ",").replace("x", ".") : 0]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="-5" width="142" height="12" uuid="72421fa5-2ec4-4efc-8134-e8202c021299"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($F{NJOP_BUMI_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="7" width="142" height="12" isRemoveLineWhenBlank="true" uuid="a4ff430a-5d8e-4adb-989d-51ee4353798d"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{NJOP_BNG_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="44" width="142" height="14" uuid="32411349-f7f1-41d9-959c-c3eb2b29d703"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{NJOP_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="56" width="142" height="14" uuid="f186a620-7d53-4268-a745-2f962d3a8055"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{NJOPTKP_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="68" width="142" height="14" uuid="3172e620-70c8-498c-a292-ec12775bdea2"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{NJOPKP_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="282" y="7" width="100" height="12" uuid="ad430ce9-6d4e-4d8c-acc2-271c5bc78003"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUAS_BNG_SPPT} > 0 ? new DecimalFormat("#,##0").format($F{NJOP_BNG_SPPT}/$F{LUAS_BNG_SPPT}).replace(",", "x").replace(".", ",").replace("x", ".") : 0]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="173" y="7" width="60" height="12" uuid="3fde58fa-fe01-44bc-81d4-167e933b091e"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUAS_BNG_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="238" y="7" width="33" height="12" uuid="2a59fed7-4722-4c45-b579-fbbd3cf6e875"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{KD_KLS_BNG}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="83" y="-5" width="90" height="12" uuid="c3e69935-13d2-4c40-915a-e2d5aa73c5b1"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[BUMI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="83" y="7" width="90" height="12" uuid="0aa99dab-b91f-4210-a7f7-d2a447f9ee5b"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[BANGUNAN]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="81" width="142" height="14" uuid="0066b16d-2f8e-4fbc-9a71-e60fbd985d05"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TARIF_SPPT}+" %"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="93" width="142" height="14" uuid="d621077a-2225-40bb-b750-0a8e5e65a65e"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{PBB_TERHUTANG_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="379" y="107" width="142" height="14" uuid="1fb62c93-ef22-473f-964c-17de026ca151"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FAKTOR_PENGURANG_SPPT_2} == null ? "" : new DecimalFormat("#,##0.00").format($F{FAKTOR_PENGURANG_SPPT_2})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="83" y="107" width="241" height="14" uuid="e419a322-939c-43fa-aeee-8ea90a548cc1"/>
+				<box rightPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TXT_FAKTOR_PENGURANG}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="83" y="19" width="90" height="13" uuid="801bc27d-1e15-45fc-91e8-44b352f32201"/>
+				<box rightPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOPMB} == 0 ? "" : "BUMI *"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="173" y="19" width="60" height="13" uuid="b0075a04-5083-4b03-844f-fcfd13499c7d"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUAS_BUMI_BEBAN_SPPT} == 0 ? " " :$F{LUAS_BUMI_BEBAN_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="238" y="19" width="33" height="13" uuid="1be12ec6-39fd-4b6c-b4f3-ba95c270d38d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOPMB} == 0 ? " " :$F{KD_KLS_BNG}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="382" y="19" width="142" height="12" uuid="d6acead8-1def-4cc9-a70f-1cfe8939ce34"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOP_BUMI_BEBAN_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="282" y="19" width="100" height="12" uuid="d6fe7558-e239-4163-9831-f22a256629d1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOPMB} == 0 ? " " : $F{NJOPMB}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="382" y="31" width="142" height="12" uuid="c1f0cb2d-e6d8-49d3-86af-d14ffcd6a000"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOP_BNG_BEBAN_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="282" y="31" width="100" height="12" uuid="6bf8ef2d-ed1b-49f1-8644-910e56f0a2b8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOPMBNG} == 0 ? " " : $F{NJOPMBNG}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="238" y="32" width="33" height="13" uuid="509788d6-3dd9-4099-860f-b0505fbd1e8a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOPMB} == 0 ? " " :$F{KD_KLS_BNG}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="83" y="32" width="90" height="13" uuid="7abf01a0-b976-4886-8f85-8d7e2dae4a2c"/>
+				<box rightPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NJOPMB} == 0 ? "" : "BANGUNAN *"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="173" y="32" width="60" height="13" uuid="54efe094-d3f7-4806-ae83-c4be32bf6862"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LUAS_BNG_BEBAN_SPPT} == 0 ? " " :$F{LUAS_BNG_BEBAN_SPPT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="77" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.equals( 1 ) && $F{XXX} == "HEAD"]]></printWhenExpression>
+			<textField pattern="#,##0">
+				<reportElement x="379" y="3" width="142" height="14" uuid="33348cfa-3636-4b17-985b-149beb7fdca2"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{PBB_YG_HARUS_DIBAYAR_SPPT})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="83" y="13" width="295" height="52" uuid="75df7bab-27d8-49eb-8078-5f7d32a36f30"/>
+				<textFieldExpression><![CDATA[$F{TXT_TERBILANG}.toUpperCase() + " RUPIAH"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="140" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{XXX} == "HEAD"]]></printWhenExpression>
+			<textField>
+				<reportElement x="65" y="0" width="68" height="20" uuid="e9c05a33-50cc-42f8-b8c3-87429e062652"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tahun_sppt_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="0" width="106" height="20" uuid="9a2e244c-f4c6-4f7b-aca1-287fdbebcbf6"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK1})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="0" width="106" height="20" uuid="24460d25-512d-4019-8d8b-e4ab5686cbab"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{DENDA1})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="0" width="133" height="20" uuid="69641516-3cbe-45ea-8dad-658294c537e1"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="20" width="68" height="20" uuid="5c857c79-d8a5-4ec9-a43c-555bd68eb0df"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tahun_sppt_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="40" width="68" height="20" uuid="2cb51007-432e-478c-ba77-301d9661177d"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tahun_sppt_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="60" width="68" height="20" uuid="bea9c2f7-69fe-4649-a889-d33fd45c0055"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tahun_sppt_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="80" width="68" height="20" uuid="0a03f14b-8003-4a33-96ba-74745cf63c84"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tahun_sppt_5}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="20" width="106" height="20" uuid="f469b0f5-5a65-4322-a211-2ac0255c19d0"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK2})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="40" width="106" height="20" uuid="f2176e8a-4dcb-494c-a6f4-7c106831a1d3"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK3})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="60" width="106" height="20" uuid="aeb28324-b0f7-4f46-a13a-d3510bb1452f"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK4})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="80" width="106" height="20" uuid="62adf664-06d5-4389-85eb-9011d37cd100"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK5})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="20" width="106" height="20" uuid="0294fa9e-401c-4c9c-b331-aca014867d21"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{DENDA2})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="40" width="106" height="20" uuid="2f176e1a-cdbf-4280-b9bb-029f4fec6c6d"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{DENDA3})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="60" width="106" height="20" uuid="b079f930-beb4-4106-8bdc-780b3fe5ca0f"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{DENDA4})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="80" width="106" height="20" uuid="4f235369-7d88-45f6-850e-d5704a2369a2"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{DENDA5})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="100" width="106" height="20" uuid="75e2e467-19e5-4765-88d8-4eff6b46abeb"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{DENDA6})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="249" y="120" width="106" height="20" uuid="62964534-69dd-4616-b321-ae4a60be92e5"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{DENDA1} + $F{DENDA2} + $F{DENDA3} + $F{DENDA4} + $F{DENDA5} + $F{DENDA6})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="20" width="133" height="20" uuid="7b6d674b-7221-458f-aa6d-9b10fba61f28"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="40" width="133" height="20" uuid="1799ece9-bb19-4f78-9830-e352748136fa"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="60" width="133" height="20" uuid="c36c5565-aa45-4793-bb1b-a40ae1a55e1a"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA4}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="80" width="133" height="20" uuid="bec086fa-0538-40f1-805d-452f0f200126"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA5}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="100" width="133" height="20" uuid="12608238-bea7-4640-af0c-bf80a8ac5044"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA6}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="385" y="120" width="133" height="20" uuid="2c55284e-b550-4506-9f92-78107a92f08e"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SISA1} + $F{SISA2} + $F{SISA3} + $F{SISA4} + $F{SISA5} + $F{SISA6}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="100" width="106" height="20" uuid="6b8c0411-e07b-43c2-8b5a-831eb7935dbc"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK6})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="120" width="68" height="20" uuid="6c2a94bf-a49b-456a-beaa-040aeb9a8895"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TOTAL"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="134" y="120" width="106" height="20" uuid="479ae68c-1d7f-4763-9539-038d935d89d9"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{POKOK1} + $F{POKOK2} + $F{POKOK3} + $F{POKOK4} + $F{POKOK5} + $F{POKOK6})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="100" width="68" height="20" uuid="646e1614-3428-4c3f-8cf2-25f37fbe73af"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["s/d " + $P{tahun_sppt_6}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="320">
+			<printWhenExpression><![CDATA[$F{XXX} == "HEAD"]]></printWhenExpression>
+			<textField>
+				<reportElement x="172" y="41" width="100" height="20" uuid="1077b558-8d00-4d58-b9c0-1bcb884402c7"/>
+				<textFieldExpression><![CDATA[$F{TGL_JATUH_TEMPO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="83" y="183" width="369" height="30" uuid="4655e4e6-51af-4ea1-ad62-553aba8e8c4e"/>
+				<box leftPadding="3"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Dokumen ini telah ditanda tangani secara elektronik menggunakan Sertifikat Elektronik yang diterbitkan Bsre]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="348" y="41" width="181" height="20" uuid="19d3b49d-432c-402a-823d-290567c0e937"/>
+				<textFieldExpression><![CDATA["CIBINONG, "+$F{TGL_CETAK_SPPT_2}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="83" y="149" width="78" height="34" uuid="0d2c8244-537f-42cf-90aa-df5e684f9d4d"/>
+				<imageExpression><![CDATA[$P{logo_bsre}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="476" y="165" width="20" height="20" uuid="2e627aa8-7c98-46c1-a339-0230ef8623fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[^^^^]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="161" y="149" width="291" height="34" uuid="bc5fc998-313a-4bbc-bcad-e2e69864d190"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[UU ITE No.11 Tahun 2008 Pasal 5 ayat 1 : "Informasi Elektronik dan atau dokumen Elektronik dan atau hasil cetaknya merupakan alat bukti hukum yang sah"]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="83" y="69" width="202" height="65" uuid="7cf6c84c-e898-4eae-88d2-76119a053f8c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[BANK BJB, (INDOMARET,
+TOKOPEDIA, BUKALAPAK, OVO), BRI,
+UPT PAJAK DAERAH]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="348" y="100" width="148" height="34" uuid="0c66f685-5e4e-4f1f-ba97-d75ebcf04698"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nm_pejabat}+"\n"+$P{nip_pejabat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="348" y="61" width="181" height="15" uuid="7a0425e2-7edd-46f3-b83f-4fb1cbb63619"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[KEPALA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="348" y="76" width="201" height="24" uuid="91b273b4-57bf-46ac-ab04-d45b7cdbf341"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[BADAN PENGELOLAAN PENDAPATAN DAERAH KAB BOGOR]]></text>
+			</staticText>
+		</band>
+		<band height="572">
+			<printWhenExpression><![CDATA[$F{XXX} == "HEAD"]]></printWhenExpression>
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="26" y="0" width="543" height="558" uuid="4b3d64ea-5157-4633-872b-f706463bac95"/>
+				<imageExpression><![CDATA[$P{blanko_back}]]></imageExpression>
+			</image>
+			<break>
+				<reportElement x="0" y="558" width="100" height="1" uuid="f6a1fa7f-299e-4f90-9479-e43c6f1bf33c"/>
+			</break>
+		</band>
+		<band height="134" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{XXX} == "HEAD"]]></printWhenExpression>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="26" y="36" width="543" height="20" uuid="f9d61cdd-09b0-4fce-a16f-b7ab8cf230d1"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BADAN PENGELOLAAN PENDATAPAN DAERAH"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="26" y="59" width="543" height="20" uuid="cd547f16-8c3a-4ccb-818a-ec8d65cdd91f"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Daftar nilai tunggakan SPPT, status tagihan PBB-P2 dan data pembayaran yang telah dilakukan"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="26" y="79" width="543" height="20" uuid="fdd6267c-d572-4991-8963-328d8b2d16a4"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["per tanggal " + $F{TGL_CETAK} + "."]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="49" y="119" width="115" height="15" uuid="6e7d8a06-7001-4312-bb68-3aedc72a90fd"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NOP"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="164" y="119" width="56" height="15" uuid="fea601ad-c2a9-4734-89c4-4eac0ac012a1"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TAHUN"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="312" y="119" width="90" height="15" uuid="19aaa1f9-b244-4eb2-83cc-0b83930c1cfb"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NILAI BAYAR"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="402" y="119" width="87" height="15" uuid="c3425e61-9d95-4afc-916d-cc79a2cbe1fa"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TGL BAYAR"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="489" y="119" width="80" height="15" uuid="69364107-f1c5-45f9-b6d4-1c549d350c5c"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["STATUS PMB"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="26" y="119" width="23" height="15" uuid="e72e7bf8-4bf6-4ff7-b3b5-eb123cb90611"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NO"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="220" y="119" width="92" height="15" uuid="3de75ba0-cea1-4e52-abb8-e70e97d72b06"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PBB TERHUTANG"]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="15" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{XXX} == "DETAIL"]]></printWhenExpression>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="402" y="0" width="87" height="15" uuid="bd224fcc-dabf-4a55-861e-9437d2227c44"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TGL_BAYAR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="164" y="0" width="56" height="15" uuid="da39050e-4090-446c-ae4b-3d7611842781"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{THN_PAJAK_SPPT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="489" y="0" width="80" height="15" uuid="7d3091cf-e17f-40ef-a7b7-98015e7cce39"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{STS_BYR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="49" y="0" width="115" height="15" uuid="d5b74ded-ebc8-45b5-b173-368832da9f07"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOP}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="312" y="0" width="90" height="15" uuid="c6e68fb8-4cca-466e-8447-f46c0dd9c240"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{JML_BAYAR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="26" y="0" width="23" height="15" uuid="b267b656-e9aa-497f-b6de-87705ba57c47"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{URUT_X}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="220" y="0" width="92" height="15" uuid="372123b9-4621-48be-b9d8-6334889ddd10"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PBB_YG_HARUS_DIBAYAR_SPPT} - $F{FAKTOR_PENGURANG_SPPT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="842">
+			<image scaleImage="RetainShape" hAlign="Center">
+				<reportElement x="36" y="10" width="543" height="558" uuid="f50d5ec8-3a69-4a7f-9b60-913221f7a38a"/>
+				<imageExpression><![CDATA[$P{blanko_back2}]]></imageExpression>
+			</image>
+		</band>
+	</summary>
+</jasperReport>

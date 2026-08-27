@@ -1,0 +1,423 @@
+<?= $this->load->view('layouts/headers'); ?>
+<?= $this->load->view(active_module() . '/layouts/sidebar'); ?>
+
+<style>
+
+.nav-tabs > .active > a, .nav-pills > .active > a:hover {
+    color: blue;
+}
+
+.page-content,
+.container-fluid,
+.row > .col-12,
+.card,
+.card-body {
+    min-width: 0;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+</style>
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0">KASUBID BIDANG KEBERATAN - PEMBETULAN</h4>
+                        <div class="page-title-right" id="test">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item">
+                                    <a href="javascript: void(0);">Tool PBB</a>
+                                </li>
+                                <li class="breadcrumb-item active">Kasubid Bidang Keberatan - Pembetulan</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php
+            if (validation_errors()) {
+                echo '<blockquote><strong>Harap melengkapi data berikut :</strong>';
+                echo validation_errors('<small>', '</small>');
+                echo '</blockquote>';
+            } ?>
+
+            <?php echo msg_block();?>
+        
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="input-group w-auto">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-end-0">Tgl Apr Koord PKP</span>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" id="tgl_fr" class="form-control" style="width:100px">
+                                    </div>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-end-0">s/d</span>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" id="tgl_to" class="form-control" style="width:100px">
+                                    </div>
+                                </div>
+                                <div class="input-group w-auto">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-end-0">Status</span>
+                                    </div>
+                                    <div class="controls">
+                                        <?php echo $select_status_kd; ?>
+                                    </div>
+                                </div>
+                                <div class="input-group w-auto hidden">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-end-0">Jns Pelayanan</span>
+                                    </div>
+                                    <div class="controls">
+                                        <?php echo $select_jns_ply; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="input-group w-auto">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-end-0">No Pelayanan</span>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" id="thn_ply" class="form-control" placeholder="Tahun" style="width:100px">
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" id="bundel_ply" class="form-control" placeholder="Bundel" style="width:100px">
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" id="urut_ply" class="form-control" placeholder="Urut" style="width:100px">
+                                    </div>
+                                </div>
+                                <div class="input-group w-auto">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-end-0">NOP</span>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" id="nop" class="form-control" name="nop" placeholder="Cari NOP" style="width:200px">
+                                    </div>
+                                </div>
+                                <div class="col-md-1"><button class="btn btn-primary" id="btn_cari">Cari</button></div>
+                            </div>
+
+                            <table class="table table-striped table-bordered mt-2" id="table1">
+                            <!-- <table id="table1" class="table table-striped table-bordered table-nowrap mt-2" style="border-collapse: collapse; border-spacing: 0; width: 100%;"> -->
+                            <!-- <table id="table1" class="table table-striped table-nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;"> -->
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>NO PLY</th>
+                                    <th>TGL KOORD PKP</th>
+                                    <th>NOP</th>
+                                    <th>SUB JNS PLY</th>
+                                    <th>NAMA PEMOHON</th>
+                                    <th>KECAMATAN</th>
+                                    <th>KELURAHAN</th>
+                                    <th>STATUS</th>
+									<th>TGL PERKIRAAN SELESAI</th>
+                                    <th>ACTION</th>
+                                    <th>sts</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- TUTUP CONTAINER-FLUID -->
+        </div>
+    </div>
+
+<?= $this->load->view('layouts/foot.php'); ?>
+</div>
+<?= $this->load->view('layouts/scripts.php'); ?>
+
+<script>
+
+    var mID;
+    var mNIK;
+    var mSTS;
+    var oTable;
+    function reload_grid() {
+        var tgl_fr = $('#tgl_fr').val();
+        var tgl_to = $('#tgl_to').val();
+        var jns_ply = $('#jns_ply').val();
+        var thn_ply = $('#thn_ply').val();
+        var bundel_ply = $('#bundel_ply').val();
+        var urut_ply = $('#urut_ply').val();
+        var nop = $('#nop').val();
+        var sts_kd = $('#status_kd').val();
+
+        var params = {
+            tgl_fr : tgl_fr,
+            tgl_to : tgl_to,
+            jns_ply : jns_ply,
+            thn_ply : thn_ply,
+            bundel_ply : bundel_ply,
+            urut_ply : urut_ply,
+            nop : nop,
+            sts_kd : sts_kd,
+        };
+
+        var data_params = decodeURIComponent($.param(params));
+        oTable.fnReloadAjax("<?php echo active_module_url();?>bid_keberatan_pembetulan_kasubid/grid/?"+data_params);
+    }
+
+    function f_dtl(id) {
+        window.location = '<?php echo active_module_url("bid_keberatan_pembetulan_kasubid/detail"); ?>'+id;
+    }
+
+    function f_edit(id, sts) {
+        if(sts == '9') {
+            window.location = '<?php echo active_module_url("bid_keberatan_pembetulan_kasubid/edit"); ?>'+id;
+        } else {
+            alert('Tidak bisa edit data. Status dokumen bukan Draft'); return false;
+        }
+    }
+
+    function f_ctk(id, sts) {
+        if(sts != 'D') {
+            Toast.fire({
+                icon: 'error',
+                title: 'Status Dokumen belum ditetapkan. Tidak dapat Cetak SK'
+            });
+            return false;
+        }
+        var url = '<?php echo active_module_url(); ?>bid_keberatan_pembetulan_kasubid/cetak_sk_tolak/' + id;
+        var winparams = 'width=' + screen.width + ',height=' + screen.height + ',directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no';
+        window.open(url, 'SK Pembetulan', winparams);
+    }
+
+    function f_ctk_penelitian(id, sts) {
+        if(sts == '4') {
+            Toast.fire({
+                icon: 'error',
+                title: 'Status Dokumen belum diverifikasi Pendanil'
+            });
+            return false;
+        } else {
+            var url = '<?php echo active_module_url(); ?>bid_keberatan_pembetulan_kasubid/cetak_analisa_pembetulan/' + id;
+            var winparams = 'width=' + screen.width + ',height=' + screen.height + ',directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no';
+            window.open(url, 'Analisa Pembetulan', winparams);
+        }
+    }
+
+    function f_ctk_sk(id, sts) {
+        var url = '<?php echo active_module_url(); ?>bid_keberatan_pembetulan_kasubid/cetak_draft_sk/' + id;
+        var winparams = 'width=' + screen.width + ',height=' + screen.height + ',directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no';
+        window.open(url, 'SK Pembetulan', winparams);
+    }
+
+    $(document).ready(function() {
+        $('body').tooltip({
+            selector: '[data-toggle="tooltip"]',
+            container: 'body'
+        });
+
+        oTable = $('#table1').dataTable({
+            "iDisplayLength": 13,
+            "sPaginationType": "full_numbers",
+            //  "bJQueryUI": true,
+            "bAutoWidth": false,
+            "sDom": '<"toolbar">frtip',
+            "aaSorting": [[ 0, "desc" ]],
+            drawCallback: function () {
+                // destroy tooltip lama dulu
+                $('#table1 [data-toggle="tooltip"]').tooltip('dispose');
+
+                // init ulang tooltip khusus table1
+                $('#table1 [data-toggle="tooltip"]').tooltip({
+                    container: 'body',
+                    trigger: 'hover'
+                });
+            },
+            "aoColumnDefs": [
+                { "aTargets": [0], "bSearchable": false, "bVisible": false, "sWidth": "", "sClass": "" },
+                { "aTargets": [1], "bSearchable": true, "bVisible": true, "sWidth": "", "sClass": "" },
+                { "aTargets": [2], "bSearchable": true,  "bVisible": true,  "sWidth": "50px", "sClass": "" },
+                { "aTargets": [3], "bSearchable": true,  "bVisible": true,  "sWidth": "", "sClass": "" },
+                { "aTargets": [4], "bSearchable": true,  "bVisible": true,  "sWidth": "", "sClass": "" },
+                { "aTargets": [5], "bSearchable": true,  "bVisible": true,  "sWidth": "", "sClass": "" },
+                { "aTargets": [6], "bSearchable": true,  "bVisible": true,  "sWidth": "", "sClass": "" },
+                { "aTargets": [7], "bSearchable": false,  "bVisible": true,  "sWidth": "", "sClass": "" },
+				{ "aTargets": [8], "bSearchable": false,  "bVisible": true,  "sWidth": "", "sClass": "" },
+                { "aTargets": [9], "bSearchable": false,  "bVisible": true,  "sWidth": "", "sClass": "" },
+                { "aTargets": [10], "bSearchable": false,  "bVisible": true,  "sWidth": "125px", "sClass": "",
+                    "mRender": function( data, type, full) {
+                        var edt = '<button class="btn btn-danger rounded-circle me-1" '+
+                                  'onclick="f_edit(\''+full[0]+'\', \''+full[11]+'\')" type="button" ' +
+                                  'data-toggle="tooltip" data-placement="top" title="Action" >'+
+                                  '<i class="fas fa-pencil-alt"></i></button>';
+                        var dtl = '<button class="btn btn-warning rounded-circle me-1" onclick="f_dtl(\''+full[0]+'\')" type="button" '+
+                                  'data-toggle="tooltip" data-placement="top" title="Detail" >'+
+                                  '<i class="fas fa-search"></i></button>';
+                        var ctk = '';
+                        ctk = `
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-info rounded-circle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Opsi Cetak">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">`;
+
+                        if (full[11] == 'D') {
+                            // ctk = '<button class="btn btn-info rounded-circle" ' +
+                            //       'onclick="f_ctk(\''+full[0]+'\', \''+full[11]+'\')" ' +
+                            //       'data-toggle="tooltip" ' +
+                            //       'data-placement="top" ' +
+                            //       'title="Cetak SK Tolak">' +
+                            //       '<i class="fas fa-print"></i>' +
+                            //       '</button>';
+                            ctk = ctk + `
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="f_ctk('${full[0]}', '${full[11]}')">
+                                        <i class="fas fa-file-excel mr-2"></i> Cetak SK Tolak
+                                    </a>`;
+                        }
+                        ctk = ctk + `
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="f_ctk_penelitian('${full[0]}', '${full[11]}')">
+                                        <i class="fas fa-file-alt mr-2"></i> Cetak Analisa Penilaian
+                                    </a>
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="f_ctk_sk('${full[0]}', '${full[11]}')">
+                                        <i class="fas fa-file-alt mr-2"></i> Cetak Draft SK Pembetulan
+                                    </a>
+                                </div>
+                            </div>
+                            `;
+                        return edt + dtl + ctk;
+                    }
+                },
+                { "aTargets": [11], "bSearchable": false,  "bVisible": false,  "sWidth": "", "sClass": "" },
+            ],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $(nRow).on("click", function (event) {
+                    if ($(this).hasClass('row_selected')) {
+                        mID = ''; 
+                        $(this).removeClass('row_selected');
+                    } else {
+                        var data = oTable.fnGetData( this );
+                        mID = data[0];
+
+                        oTable.$('tr.row_selected').removeClass('row_selected');
+                        $(this).addClass('row_selected');
+                    }
+                })
+            },
+            "fnDrawCallback": function( oSettings ) {
+                mID = ''; 
+
+                $("#table1").next().removeClass("card");
+
+                $("#table1")
+                    .closest(".dataTables_wrapper")
+                    .children("table.dataTable")
+                    .wrap('<div class="table-responsive w-100"></div>');
+
+                $("#table1")
+                    .closest(".dataTables_wrapper")
+                    .children("div:eq(1)")
+                    .removeClass("row")
+                    .addClass(
+                        "d-flex align-items-center justify-content-between flex-wrap w-100 mt-2"
+                    )
+                    .find(".col-sm-12")
+                    .removeAttr("class");
+            },
+            "oLanguage": {
+                "sProcessing":   "<img border='0' src='<?php echo base_url('assets/pad/img/ajax-loader-big-circle-ball.gif')?>' />",
+                "sLengthMenu":   "Tampilkan _MENU_ entri",
+                "sZeroRecords":  "Tidak ada data",
+                "sInfo":         "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                "sInfoEmpty":    "Menampilkan 0 sampai 0 dari 0 entri",
+                "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+                "sInfoPostFix":  "",
+                "sSearch":       "Cari : ",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "&laquo;",
+                    "sPrevious": "&lsaquo;",
+                    "sNext":     "&rsaquo;",
+                    "sLast":     "&raquo;",
+                }
+            },
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "<?php echo active_module_url();?>bid_keberatan_pembetulan_kasubid/grid"
+        });
+
+        oTable.parent().find(".dataTables_filter").addClass("d-inline-block float-end mt-2");
+        oTable.parent().find(".dataTables_info").addClass("d-inline-block");
+        oTable.parent().find(".dataTables_paginate").addClass("d-inline-block float-end");
+
+        oTable.on('processing.dt', function(e, settings, processing) {
+        if (processing) {
+            $('#table1').hide();
+            $('table#table1').addClass('d-none');
+            } else {
+                $('#table1').show();
+                $('table#table1').removeClass('d-none');
+            }
+        })
+
+        // Settings Table Scroll Responsive
+        let parent = $("#appTable").parent();
+        let table_responsive = $("<div>").addClass("table-responsive mb-2").appendTo(parent);
+        $("#appTable").appendTo("div.table-responsive");
+        table_responsive.after($("#appTable_info"));
+        $("#appTable_info").after($("#appTable_paginate"));
+
+        var tb_array = [];
+        var tb = tb_array.join(' ');
+        $("div.toolbar").html(tb);
+
+        $("div.toolbar").addClass("d-inline-block mb-2");
+        $("div.toolbar")
+            .html('<div class="d-flex gap-2 mb-2" role="group">' + tb + '</div>')
+            .removeClass()
+            .addClass("mb-2");
+
+        $('#nop').formatter({
+            'pattern': '{{99}}.{{99}}-{{999}}.{{999}}-{{999}}.{{9999}}.{{9}}',
+        });
+
+        $('#tahun').formatter({
+            'pattern': '{{9999}}',
+        });
+
+        var tgl_fr_dtp = $('#tgl_fr').datepicker({
+            format: 'dd-mm-yyyy'
+        }).on('changeDate', function(ev) {
+            tgl_fr_dtp.hide();
+        }).data('datepicker');
+
+        var tgl_to_dtp = $('#tgl_to').datepicker({
+            format: 'dd-mm-yyyy'
+        }).on('changeDate', function(ev) {
+            tgl_to_dtp.hide();
+        }).data('datepicker');
+
+        $("[id=btn_cari]").click(function(){
+          reload_grid();
+        });
+
+
+    });
+</script>
+
+<?= $this->load->view('layouts/footer.php'); ?>

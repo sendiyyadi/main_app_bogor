@@ -1,0 +1,17 @@
+{
+	"sProcessing":   "<img border='0' src='<?php echo base_url('assets/pad/img/ajax-loader-big-circle-ball.gif')?>' />",
+	"sLengthMenu":   "Tampilkan _MENU_ entri",
+	"sZeroRecords":  "Tidak ada data",
+	"sInfo":         "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+	"sInfoEmpty":    "Menampilkan 0 sampai 0 dari 0 entri",
+	"sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+	"sInfoPostFix":  "",
+	"sSearch":       "Cari : ",
+	"sUrl":          "",
+	"oPaginate": {
+		"sFirst":    "&laquo;",
+		"sPrevious": "&lsaquo;",
+		"sNext":     "&rsaquo;",
+		"sLast":     "&raquo;",
+	}
+}

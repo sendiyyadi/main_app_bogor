@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bukti_terima_berkas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="81d658db-d1ac-46b7-b564-a0b0bc3a10fa">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="43"/>
+	<parameter name="logo_bogor" class="java.lang.String"/>
+	<parameter name="logo_semut_kanan" class="java.lang.String"/>
+	<parameter name="thn_ply" class="java.lang.String">
+		<defaultValueExpression><![CDATA[2021]]></defaultValueExpression>
+	</parameter>
+	<parameter name="bundel_ply" class="java.lang.String">
+		<defaultValueExpression><![CDATA[0001]]></defaultValueExpression>
+	</parameter>
+	<parameter name="no_urut_ply" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="kd_propinsi" class="java.lang.String">
+		<defaultValueExpression><![CDATA[32]]></defaultValueExpression>
+	</parameter>
+	<parameter name="kd_dati2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[03]]></defaultValueExpression>
+	</parameter>
+	<parameter name="kd_kecamatan" class="java.lang.String">
+		<defaultValueExpression><![CDATA[100]]></defaultValueExpression>
+	</parameter>
+	<parameter name="kd_kelurahan" class="java.lang.String">
+		<defaultValueExpression><![CDATA[011]]></defaultValueExpression>
+	</parameter>
+	<parameter name="kd_blok" class="java.lang.String">
+		<defaultValueExpression><![CDATA[012]]></defaultValueExpression>
+	</parameter>
+	<parameter name="no_urut" class="java.lang.String">
+		<defaultValueExpression><![CDATA[6969]]></defaultValueExpression>
+	</parameter>
+	<parameter name="kd_jns_op" class="java.lang.String">
+		<defaultValueExpression><![CDATA[7]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tglcetak" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT P.THN_PELAYANAN, P.BUNDEL_PELAYANAN, P.NO_URUT_PELAYANAN, RP.NM_JENIS_PELAYANAN, CASE WHEN P.TGL_SURAT_PERMOHONAN IS NULL THEN '-' ELSE TO_CHAR(P.TGL_SURAT_PERMOHONAN,'DD-MM-YYYY') END AS TGL_SURAT_PERMOHONAN, NVL(P.ALASAN,'-') AS ALASAN, P.KD_PROPINSI_PEMOHON, P.KD_DATI2_PEMOHON, P.KD_KECAMATAN_PEMOHON, P.KD_KELURAHAN_PEMOHON, P.KD_BLOK_PEMOHON, P.NO_URUT_PEMOHON, P.KD_JNS_OP_PEMOHON, P.NIK_PENGIRIM FROM PST_PERMOHONAN_ONLINE P LEFT JOIN REF_JNS_PELAYANAN RP ON RP.KD_JNS_PELAYANAN=P.KD_JNS_PELAYANAN WHERE P.THN_PELAYANAN = $P{thn_ply} AND P.BUNDEL_PELAYANAN=$P{bundel_ply} AND P.NO_URUT_PELAYANAN = $P{no_urut_ply} AND P.KD_PROPINSI_PEMOHON = $P{kd_propinsi} AND P.KD_DATI2_PEMOHON=$P{kd_dati2} AND P.KD_KECAMATAN_PEMOHON=$P{kd_kecamatan} AND P.KD_KELURAHAN_PEMOHON=$P{kd_kelurahan} AND P.KD_BLOK_PEMOHON=$P{kd_blok} AND P.NO_URUT_PEMOHON=$P{no_urut} AND P.KD_JNS_OP_PEMOHON=$P{kd_jns_op}]]>
+	</queryString>
+	<field name="THN_PELAYANAN" class="java.lang.String"/>
+	<field name="BUNDEL_PELAYANAN" class="java.lang.String"/>
+	<field name="NO_URUT_PELAYANAN" class="java.lang.String"/>
+	<field name="NM_JENIS_PELAYANAN" class="java.lang.String"/>
+	<field name="TGL_SURAT_PERMOHONAN" class="java.lang.String"/>
+	<field name="ALASAN" class="java.lang.String"/>
+	<field name="KD_PROPINSI_PEMOHON" class="java.lang.String"/>
+	<field name="KD_DATI2_PEMOHON" class="java.lang.String"/>
+	<field name="KD_KECAMATAN_PEMOHON" class="java.lang.String"/>
+	<field name="KD_KELURAHAN_PEMOHON" class="java.lang.String"/>
+	<field name="KD_BLOK_PEMOHON" class="java.lang.String"/>
+	<field name="NO_URUT_PEMOHON" class="java.lang.String"/>
+	<field name="KD_JNS_OP_PEMOHON" class="java.lang.String"/>
+	<field name="NIK_PENGIRIM" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="119" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="119" forecolor="#666666" uuid="a448a19d-98c6-4c44-b672-4ee44d105446"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="149" y="0" width="253" height="49" uuid="eee3c157-24df-4d4a-8b2f-55cde13d0f24"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BUKTI PENERIMAAN BERKAS
+PERMOHONAN ONLINE PBB]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="121" y="49" width="310" height="70" uuid="e3a7e200-09a5-4191-aca5-3d34887bb7e3"/>
+				<textElement textAlignment="Center">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BADAN PENGELOLAAN PENDAPATAN DAERAH"+"\n"+
+"KABUPATEN BOGOR"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="20" y="3" width="101" height="96" uuid="652a94f8-9e0d-465f-8b7c-d256b9ea9f2c"/>
+				<imageExpression><![CDATA[$P{logo_bogor}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="431" y="0" width="124" height="96" uuid="4e72b1d7-495b-4aed-9c7d-2ddcd0e8f833"/>
+				<imageExpression><![CDATA[$P{logo_semut_kanan}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="261">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="259" forecolor="#666666" uuid="af8a4dcf-42cc-41b1-a438-8e67ca311978"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="10" y="10" width="108" height="20" uuid="4515771c-a453-487a-b5c0-d6b75fa429f8"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[NO PELAYANAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="30" width="108" height="20" uuid="09f6889f-cbe9-4c59-929d-592f57bce1a3"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[NOP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="50" width="108" height="20" uuid="bd44e944-92de-43f2-93cc-068dc1d837cc"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[JENIS PELAYANAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="70" width="108" height="20" uuid="7971aa50-840d-4441-bec8-f331f379baa8"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TGL KIRIM BERKAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="90" width="108" height="20" uuid="6e987fee-ef1b-4ec5-8e66-0435c250a837"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CATATAN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="10" width="10" height="20" uuid="435828e6-4f5b-4dd5-8de8-10e23ed96bfc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="30" width="10" height="20" uuid="5459e529-a6b9-4736-8fa3-a5b68ed00cb6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="50" width="10" height="20" uuid="f8150781-6cc9-44cc-8a2f-e21a9edfaa49"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="70" width="10" height="20" uuid="5cd87445-fc88-4eb8-9111-3f9c5c2e5484"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="90" width="10" height="20" uuid="8b39028f-253b-4489-9eef-185a8c4dbc4d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="128" y="10" width="272" height="20" uuid="04430b88-9d1f-405a-8a0e-a7db3e323125"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{THN_PELAYANAN}+$F{BUNDEL_PELAYANAN}+$F{NO_URUT_PELAYANAN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="30" width="272" height="20" uuid="e486e170-b2bf-49f8-be13-e418cb1d18e9"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{KD_PROPINSI_PEMOHON}+$F{KD_DATI2_PEMOHON}+$F{KD_KECAMATAN_PEMOHON}+$F{KD_KELURAHAN_PEMOHON}+$F{KD_BLOK_PEMOHON}+$F{NO_URUT_PEMOHON}+$F{KD_JNS_OP_PEMOHON}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="50" width="272" height="20" uuid="9265306d-e2f9-424e-a4ed-16127d53992b"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NM_JENIS_PELAYANAN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="70" width="272" height="20" uuid="8d8712c3-d1e3-4f8e-bf10-4b7acbf30270"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{TGL_SURAT_PERMOHONAN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="90" width="272" height="20" uuid="8feee7cb-b264-498d-acdc-371809241166"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ALASAN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="315" y="146" width="160" height="20" uuid="70df30bf-f649-4537-adf1-885b4f6b9bd5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["CIBINONG, "+$P{tglcetak}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="350" y="239" width="100" height="20" uuid="028bf71a-578c-45eb-a20b-316869541860"/>
+				<textFieldExpression><![CDATA[$F{NIK_PENGIRIM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

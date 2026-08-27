@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sk_njop" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b03552f2-7522-4447-80fd-b2785b7cfc54">
+	<property name="ireport.zoom" value="1.3310000000000228"/>
+	<property name="ireport.x" value="65"/>
+	<property name="ireport.y" value="144"/>
+	<parameter name="logo_bogor" class="java.lang.String"/>
+	<parameter name="adi" class="java.lang.String"/>
+	<parameter name="kd_prop" class="java.lang.String"/>
+	<parameter name="kd_dati2" class="java.lang.String"/>
+	<parameter name="kd_kec" class="java.lang.String"/>
+	<parameter name="kd_kel" class="java.lang.String"/>
+	<parameter name="kd_blok" class="java.lang.String"/>
+	<parameter name="no_urut" class="java.lang.String"/>
+	<parameter name="kd_jns_op" class="java.lang.String"/>
+	<parameter name="tahun" class="java.lang.String"/>
+	<parameter name="id_nop" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select T.NO_SK,
+T.TAHUN AS TAHUN,
+O.KD_PROPINSI||'.'||O.KD_DATI2||'.'||O.KD_KECAMATAN||'.'||O.KD_KELURAHAN||'.'||O.KD_BLOK||'.'||O.NO_URUT||'.'||O.KD_JNS_OP AS NOP,
+O.JALAN_OP,
+KL.NM_KELURAHAN, KC.NM_KECAMATAN,
+O.TOTAL_LUAS_BUMI AS LUAS_BUMI,
+O.TOTAL_LUAS_BNG AS LUAS_BNG,
+O.NJOP_BUMI AS NJOP_BUMI,
+O.NJOP_BNG AS NJOP_BNG,
+O.NJOP_BUMI+O.NJOP_BNG AS TOTAL,
+TERBILANG(O.NJOP_BUMI+O.NJOP_BNG) AS TERBILANG,
+S.NM_WP AS NM_WP,
+S.JALAN_WP||' Desa/Kel '||S.KELURAHAN_WP||'- '||S.KOTA_WP AS ALAMAT_WP
+FROM TEMP_SKNJOP_EADM T
+JOIN DAT_OBJEK_PAJAK O ON T.KD_PROPINSI = O.KD_PROPINSI
+AND T.KD_DATI2 = O.KD_DATI2
+AND T.KD_KECAMATAN = O.KD_KECAMATAN
+AND T.KD_KELURAHAN = O.KD_KELURAHAN
+AND T.KD_BLOK = O.KD_BLOK
+AND T.KD_JNS_OP = O.KD_JNS_OP
+AND T.NO_URUT = O.NO_URUT
+JOIN DAT_SUBJEK_PAJAK S ON O.SUBJEK_PAJAK_ID = S.SUBJEK_PAJAK_ID
+JOIN REF_KECAMATAN KC ON O.KD_KECAMATAN = KC.KD_KECAMATAN
+JOIN REF_KELURAHAN KL ON O.KD_KECAMATAN = KL.KD_KECAMATAN AND
+O.KD_KELURAHAN = KL.KD_KELURAHAN
+WHERE T.KD_PROPINSI = $P{kd_prop}
+AND T.KD_DATI2 = $P{kd_dati2}
+AND T.KD_KECAMATAN = $P{kd_kec}
+AND T.KD_KELURAHAN = $P{kd_kel}
+AND T.KD_BLOK = $P{kd_blok}
+AND T.NO_URUT = $P{no_urut}
+AND T.KD_JNS_OP = $P{kd_jns_op}
+AND T.TAHUN = $P{tahun}
+AND T.ID_NOP = $P{id_nop}]]>
+	</queryString>
+	<field name="NO_SK" class="java.lang.String"/>
+	<field name="NOP" class="java.lang.String"/>
+	<field name="JALAN_OP" class="java.lang.String"/>
+	<field name="NM_KELURAHAN" class="java.lang.String"/>
+	<field name="NM_KECAMATAN" class="java.lang.String"/>
+	<field name="LUAS_BUMI" class="java.math.BigDecimal"/>
+	<field name="LUAS_BNG" class="java.math.BigDecimal"/>
+	<field name="NJOP_BUMI" class="java.math.BigDecimal"/>
+	<field name="NJOP_BNG" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="TERBILANG" class="java.lang.String"/>
+	<field name="NM_WP" class="java.lang.String"/>
+	<field name="TAHUN" class="java.lang.String"/>
+	<field name="ALAMAT_WP" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="802">
+			<staticText>
+				<reportElement x="130" y="14" width="405" height="20" uuid="ef3864ce-279e-4959-9f5d-61c1911ddbcd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PEMERINTAHAN KABUPATEN BOGOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="34" width="405" height="29" uuid="ddeeae85-2580-4329-b5c2-bb418d05d5fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BADAN PENGELOLAAN PENDAPATAN DAERAH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="120" width="521" height="21" uuid="7f683ab3-82d4-4f79-8640-d7e8e23e1acc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SURAT KETERANGAN NILAI JUAL OBJEK PAJAK BUMI DAN BANGUNAN]]></text>
+			</staticText>
+			<line>
+				<reportElement x="14" y="105" width="521" height="1" uuid="df610513-337a-4b3b-ab7c-92e731548b22"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="130" y="63" width="405" height="20" uuid="f6298c98-7fa0-4c11-bae1-4e4a85861658"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[JL. TEGAR BERIMAN TELP. (021) 87912462, FAX. (021) 87912442]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="73" width="405" height="20" uuid="03ca6433-bb31-4d29-9bb1-0ce320922136"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Website : www.bappenda.bogorkab.go.id, Email : bappenda@bogorkab.go.id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="83" width="405" height="20" uuid="302acc9d-1fc3-4316-80bc-c4317c12a3b8"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+				<text><![CDATA[CIBINONG 16914]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="14" y="139" width="521" height="16" uuid="a04bce7b-9a80-4d49-9f41-2db4dc85ee72"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Nomor : "+$F{NO_SK}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="46" y="182" width="203" height="13" uuid="baf7cf36-4668-411e-9006-5b573cb878c7"/>
+				<text><![CDATA[Yang bertanda tangan dibawah ini :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="14" y="155" width="521" height="16" uuid="6946baa5-3e58-45d4-b9d9-227621df2b23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tanggal : "+new java.text.SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("id", "ID")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="14" y="195" width="71" height="13" uuid="b3ec151c-0228-41e4-84d6-96f90e23fcdb"/>
+				<text><![CDATA[Nama]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="195" width="10" height="13" uuid="130edb32-0ae7-468e-9e2f-e60b901d1ea6"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="195" width="154" height="13" uuid="bbb17f35-9701-43e9-a584-e3eac5e422b1"/>
+				<text><![CDATA[ADI MULYADI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="208" width="71" height="13" uuid="f32358db-72f2-43db-a68a-055e14b63bd9"/>
+				<text><![CDATA[Jabatan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="208" width="10" height="13" uuid="2214d91e-7c64-4898-b217-65628b4e7817"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="208" width="266" height="13" uuid="4a523856-12de-4e0a-8d7a-bb260135be29"/>
+				<text><![CDATA[Kepala Badan Pengelolaan Pendapatan Daerah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="229" width="521" height="75" uuid="574c47f7-7947-4c05-a79a-5607c0506b64"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Sesuai  dengan  ketentuan Pasal 38 Undang-undang Nomor 1 Tahun 2022 tentang HKPD dan Peraturan Daerah Nomor 11 Tahun 2023 tentang Pajak Daerah dan Retribusi Daerah, sebagaimana telah diubah dengan Peraturan Daerah Kabupaten Bogor Nomor 1 Tahun 2025 tentang Perubahan atas Peraturan Daerah Kabupaten Bogor Nomor 11 Tahun 2023 Tentang Pajak Daerah dan Retribusi Daerah. Dengan ini menerangkan bahwa sesuai dengan basis data Badan Pengelolaan Pendapatan Daerah atas objek pajak :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="299" width="152" height="13" uuid="3d96151d-5581-43dc-98e2-8d999e3b513d"/>
+				<text><![CDATA[Nomor Objek Pajak Daerah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="299" width="10" height="13" uuid="3bd71c65-1ad0-4773-aa4c-20b1b6506b2e"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="312" width="152" height="13" uuid="f08067ae-e0ef-439b-bcee-034072dbc9fb"/>
+				<text><![CDATA[Letak Objek Pajak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="312" width="10" height="13" uuid="755b27d0-dc6c-4929-9c7a-3d80ab467bd8"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="176" y="299" width="359" height="13" uuid="2998e25a-de28-4f3c-88f9-434a53bb7e9e"/>
+				<textFieldExpression><![CDATA[$F{NOP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="176" y="312" width="359" height="13" uuid="8091bc19-4ab7-428b-8c85-019679a1a28f"/>
+				<textFieldExpression><![CDATA[$F{JALAN_OP}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="14" y="353" width="521" height="13" uuid="dda0ce5a-0cd9-43ef-89bb-b836766a6a62"/>
+				<text><![CDATA[Setelah dilakukan penelitian diperoleh data sebagai berikut :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="366" width="93" height="13" uuid="75def2c3-af71-490f-8c22-c872c30aa15a"/>
+				<text><![CDATA[Luas Bumi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="379" width="93" height="13" uuid="34c75e1f-b29a-4dc7-89d2-3d788da89084"/>
+				<text><![CDATA[Luas Bangunan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="392" width="93" height="13" uuid="b241b08a-9137-4f0b-9a2c-d825c4a45ae3"/>
+				<text><![CDATA[NJOP Bumi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="405" width="93" height="13" uuid="21d21db0-cd61-46ac-9104-dc5361a1a21a"/>
+				<text><![CDATA[NJOP Bangunan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="418" width="137" height="13" uuid="5b71655b-49f6-4a29-a895-e2568a4c7b30"/>
+				<text><![CDATA[Nilai Objek Pajak Keseluruhan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="431" width="93" height="13" uuid="a231354d-c779-4550-a560-dd6621936c13"/>
+				<text><![CDATA[Terbilang]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="444" width="93" height="13" uuid="df98b6a3-8d27-41fd-ae6c-72a0d3b13463"/>
+				<text><![CDATA[Nama Wajib Pajak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="457" width="93" height="13" uuid="0045d0b5-3bb4-4340-ba5d-6cbb344e0819"/>
+				<text><![CDATA[Alamat Wajib Pajak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="471" width="93" height="13" uuid="9b72ea1b-c1a5-4ecb-b677-3f2eb6a5ba10"/>
+				<text><![CDATA[Tahun Pajak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="366" width="10" height="13" uuid="ecdc888b-290a-4f6e-81d5-97eea541b505"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="379" width="10" height="13" uuid="86e8a468-46a8-4f4c-8cdd-04f8a5ce7dc9"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="392" width="10" height="13" uuid="4b6e222c-e2db-400b-9e28-a6f7aafe4cd7"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="405" width="10" height="13" uuid="998e800c-08e0-459e-a499-8231278d25fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="431" width="10" height="13" uuid="b50f658f-928c-4027-a29d-f26759abbcb8"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="444" width="10" height="13" uuid="9798c7d5-1673-44b3-a6dc-1b1a3a51a28e"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="457" width="10" height="13" uuid="79adb8a5-6d18-4d0f-96ab-911b41ffb67b"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="471" width="10" height="13" uuid="75c1a234-2723-4a26-ba0c-ca263cf1fa25"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="487" width="521" height="87" uuid="a2d7c0d8-b714-4986-a274-744706e04d98"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Bahwa Surat Keterangan NJOP sesuai permohonan Subjek Pajak atau Wajib Pajak sebagaimana ketentuan perundangan  diterbitkan atas :
+1. Tanah garapan yang merupakan bagian dari tanah negara yang belum dibebani suatu hak untuk kepentingan pembayaran BPHTB
+2. Objek pajak PBB P2 selama proses pencetakan dan penerbitan SPPT belum selesai dilaksanakan,
+3. Objek pajak yang tidak dikenakan  PBB P2
+Penggunaan Surat Keterangan NJOP selain untuk ketentuan tersebut, bukan menjadi tanggung jawab Pemerintah Kabupaten Bogor/Kantor Badan Pengelolaan Pendapatan Daerah Kabupaten Bogor.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="575" width="521" height="40" uuid="5ca8f434-a15f-46b7-8f64-ef9f693df38d"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[	Demikian, Surat Keterangan NJOP ini dibuat untuk dapat dipergunakan sebagaimana mestinya. Apabila di kemudian hari terdapat kekeliruan akan dibetulkan dan ditindaklanjuti sesuai dengan ketentuan yang berlaku.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="356" y="617" width="179" height="13" uuid="eaa46720-6c7d-4cf0-b991-f1d74b3a1b28"/>
+				<text><![CDATA[Diterbitkan di Cibinong]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="356" y="630" width="70" height="13" uuid="0c95b69a-4494-415c-89dc-719ad66687c5"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Pada Tanggal : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="426" y="630" width="109" height="13" uuid="0462e822-0711-4c26-8c8b-4d7d526ecb5b"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("id", "ID")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="356" y="648" width="179" height="31" uuid="e2e9fd67-386f-446c-9201-7ec3a4af84af"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kepala Badan Pengelolaan Pendapatan Daerah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="356" y="735" width="179" height="13" uuid="a3742254-b787-4d48-9149-ed31ea2d2161"/>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[ADI MULYADI, S.H., M.H]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="356" y="748" width="179" height="13" uuid="a59f6790-534c-428c-9713-7932e504a429"/>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Pembina Tingkat I/IV/b
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="117" y="366" width="96" height="13" uuid="f7ff81e0-e33d-459d-950f-9c9ed22ca55b"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{LUAS_BUMI}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="392" width="96" height="13" uuid="d69eb195-39ad-40e5-bd2b-c701bcd43ec6"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{LUAS_BUMI}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="379" width="96" height="13" uuid="772dfa76-7876-41b1-9037-5fe46fdd3003"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{LUAS_BNG}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="405" width="96" height="13" uuid="d0f3ebab-95a7-40bc-bc80-9b4007903725"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{LUAS_BNG}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="117" y="431" width="418" height="13" uuid="5dbbcd53-07ba-4f3c-a307-e4ab2f4d6e4c"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TERBILANG}.substring(0, 1)+$F{TERBILANG}.substring(1, $F{TERBILANG}.length()).toLowerCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="444" width="418" height="13" uuid="b9320c30-25eb-454e-b8cc-ddad65b69782"/>
+				<textFieldExpression><![CDATA[$F{NM_WP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="457" width="418" height="13" uuid="783af3a1-dc82-49c6-8b61-eaab648a3a59"/>
+				<textFieldExpression><![CDATA[$F{ALAMAT_WP}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="471" width="418" height="13" uuid="fb4d309f-2642-4d9e-bce5-0ef561051a52"/>
+				<textFieldExpression><![CDATA[$F{TAHUN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="151" y="418" width="229" height="13" uuid="0d35ca18-6e49-4895-bc97-328616b87575"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[......................................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="213" y="366" width="19" height="13" uuid="a0ce8c14-1148-4bcb-9ed7-bcceedaa9583"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[M2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="213" y="379" width="19" height="13" uuid="ee02a742-1af8-434e-8655-735c17703e4f"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[M2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="213" y="392" width="19" height="13" uuid="005fb7da-4030-4b98-af5a-ed87902c3cff"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[M2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="213" y="405" width="19" height="13" uuid="70f0ef80-dba5-430e-80d7-f65eb0b9eb66"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[M2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="232" y="392" width="30" height="13" uuid="8bd21fb2-8544-414d-9712-5847288cb419"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[x Rp.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="232" y="405" width="30" height="13" uuid="dc6422c6-63fe-4670-a562-2da1c142fa80"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[x Rp.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="262" y="392" width="99" height="13" uuid="e28f63a8-bc85-4a1c-afb8-62d3310296f2"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format(($F{LUAS_BUMI} != 0 && $F{NJOP_BUMI} != 0) ? ($F{NJOP_BUMI} / $F{LUAS_BUMI}) : 0).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="262" y="405" width="99" height="13" uuid="79662f72-84bc-4bdd-8ed3-cce9d29679f4"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format(($F{LUAS_BNG} != 0 && $F{NJOP_BNG} != 0) ? ($F{NJOP_BNG} / $F{LUAS_BNG}) : 0).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="380" y="392" width="26" height="13" uuid="4ae0023a-7466-42f6-9a58-92d77d8c3cd1"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[= Rp.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="405" width="26" height="13" uuid="ddce6cb4-6b09-4392-93f2-7b0915d5894a"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[= Rp.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="361" y="392" width="19" height="13" uuid="0dae8505-dc8f-45fe-8035-8b383cd9aa97"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[M2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="361" y="405" width="19" height="13" uuid="b16fc7a4-2572-4a77-98eb-f5f3c53be97e"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[M2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="418" width="26" height="13" uuid="6ac6c56f-14ba-4da3-90b1-89367e99169d"/>
+				<textElement verticalAlignment="Top"/>
+				<text><![CDATA[= Rp.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="406" y="418" width="129" height="1" uuid="c0df63eb-92ab-4480-a7fe-45d12e4e4ffd"/>
+			</line>
+			<textField>
+				<reportElement x="406" y="392" width="129" height="13" uuid="5c19a2a6-7774-45ef-b730-190f5c2edd82"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{NJOP_BUMI}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="405" width="129" height="13" uuid="19516cb0-a426-4069-aee5-d74ad6e1ed98"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{NJOP_BNG}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="419" width="129" height="13" uuid="4f99ef06-d53b-48f8-b383-deffafed3a55"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0").format($F{NJOP_BUMI}+$F{NJOP_BNG}).replace(",", "x").replace(".", ",").replace("x", ".")]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="33" y="14" width="84" height="89" uuid="e517bb1c-a511-49b3-9556-ef76e445bbab"/>
+				<imageExpression><![CDATA[$P{logo_bogor}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="276" y="325" width="259" height="13" uuid="5628b18c-528e-4da4-83e0-c3be3011b1db"/>
+				<textFieldExpression><![CDATA[$F{NM_KELURAHAN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="338" width="260" height="13" uuid="0d82706c-d8a2-4531-9a73-8a9909aabfc9"/>
+				<textFieldExpression><![CDATA[$F{NM_KECAMATAN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="177" y="325" width="152" height="13" uuid="3851c0e9-1b45-4860-9f66-fbfbdca5da20"/>
+				<text><![CDATA[Desa / Kelurahan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="177" y="338" width="152" height="13" uuid="0e672ab6-b1f9-4d44-9fc3-d23b34ccfe9b"/>
+				<text><![CDATA[Kecamatan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="356" y="761" width="179" height="13" uuid="5344b954-43b3-4c9a-9ac5-d2819883ca60"/>
+				<textElement>
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[NIP. 197701102005011013
+]]></text>
+			</staticText>
+		</band>
+		<band/>
+	</detail>
+</jasperReport>
